@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Spark Configuration",
+  "description": "Schema for Spark configuration files (spark.yaml / spark.yml)",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "services": {
+      "type": "object",
+      "description": "Reusable service templates referenced by tests via 'ref'",
+      "additionalProperties": {
+        "$ref": "#/definitions/ServiceTemplate"
+      }
+    }
+  },
+  "definitions": {
+    "ServiceTemplate": {
+      "type": "object",
+      "required": ["image"],
+      "additionalProperties": false,
+      "properties": {
+        "image": {
+          "type": "string",
+          "description": "Docker image (e.g. postgres:15-alpine)"
+        },
+        "command": {
+          "description": "Override image CMD",
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ]
+        },
+        "workingDir": {
+          "type": "string",
+          "description": "Working directory inside the container"
+        },
+        "environment": {
+          "type": "object",
+          "description": "Environment variables",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "healthcheck": {
+          "description": "Health check configuration. Use true for the image's built-in HEALTHCHECK.",
+          "oneOf": [
+            { "type": "boolean", "const": true },
+            { "$ref": "#/definitions/HealthCheck" }
+          ]
+        },
+        "artifacts": {
+          "type": "array",
+          "description": "External artifacts to collect from the container after test execution (files or directories)",
+          "items": {
+            "$ref": "#/definitions/ServiceArtifact"
+          }
+        }
+      }
+    },
+    "ServiceArtifact": {
+      "type": "object",
+      "required": ["path"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Artifact name (defaults to filename or directory name from path)"
+        },
+        "path": {
+          "type": "string",
+          "description": "Path inside the container (file or directory)"
+        }
+      }
+    },
+    "HealthCheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "test": {
+          "description": "Healthcheck command. String or Docker Compose-style array.",
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ]
+        },
+        "interval": {
+          "type": "string",
+          "description": "Health check interval (default: 1s)",
+          "default": "1s"
+        },
+        "timeout": {
+          "type": "string",
+          "description": "Health check timeout (default: 3s)",
+          "default": "3s"
+        },
+        "retries": {
+          "type": "integer",
+          "description": "Number of retries before unhealthy (default: 30)",
+          "default": 30
+        },
+        "startPeriod": {
+          "type": "string",
+          "description": "Start period before health checks count (default: 0s)",
+          "default": "0s"
+        },
+        "startInterval": {
+          "type": "string",
+          "description": "Interval between health checks during start period"
+        }
+      }
+    }
+  }
+}

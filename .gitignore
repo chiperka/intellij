@@ -1,0 +1,23 @@
+# Gradle
+.gradle/
+build/
+gradle/wrapper/gradle-wrapper.jar
+
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# IntelliJ Platform
+.intellijPlatform/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Kotlin
+*.class
+
+# Distribution
+*.zip
+*.tar.gz

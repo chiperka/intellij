@@ -1,0 +1,415 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Spark Test Suite",
+  "description": "Schema for Spark test files (*.spark)",
+  "type": "object",
+  "required": ["name", "tests"],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Suite name"
+    },
+    "tests": {
+      "type": "array",
+      "description": "Array of test definitions",
+      "items": {
+        "$ref": "#/definitions/Test"
+      }
+    }
+  },
+  "definitions": {
+    "Test": {
+      "type": "object",
+      "required": ["name", "execution", "assertions"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Test name"
+        },
+        "description": {
+          "type": "string",
+          "description": "Test description"
+        },
+        "tags": {
+          "type": "array",
+          "description": "Tags for filtering (e.g. smoke, api)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "skipped": {
+          "type": "boolean",
+          "description": "Skip this test",
+          "default": false
+        },
+        "services": {
+          "type": "array",
+          "description": "Docker services to start for this test",
+          "items": {
+            "$ref": "#/definitions/Service"
+          }
+        },
+        "setup": {
+          "type": "array",
+          "description": "Setup steps run after healthchecks but before test execution",
+          "items": {
+            "$ref": "#/definitions/SetupInstruction"
+          }
+        },
+        "execution": {
+          "$ref": "#/definitions/Execution",
+          "description": "Test execution definition"
+        },
+        "assertions": {
+          "type": "array",
+          "description": "Expected outcomes to verify",
+          "items": {
+            "$ref": "#/definitions/Assertion"
+          }
+        }
+      }
+    },
+    "Service": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "type": "string",
+          "description": "Reference to a service template defined in spark.yaml"
+        },
+        "name": {
+          "type": "string",
+          "description": "Service identifier / hostname in the Docker network"
+        },
+        "containerName": {
+          "type": "string",
+          "description": "Explicit Docker container name"
+        },
+        "image": {
+          "type": "string",
+          "description": "Docker image (e.g. nginx:alpine)"
+        },
+        "command": {
+          "description": "Override image CMD",
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ]
+        },
+        "workingDir": {
+          "type": "string",
+          "description": "Working directory inside the container"
+        },
+        "environment": {
+          "type": "object",
+          "description": "Environment variables",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "healthcheck": {
+          "description": "Health check configuration. Use true for the image's built-in HEALTHCHECK.",
+          "oneOf": [
+            { "type": "boolean", "const": true },
+            { "$ref": "#/definitions/HealthCheck" }
+          ]
+        },
+        "artifacts": {
+          "type": "array",
+          "description": "External artifacts to collect from the container after test execution (files or directories)",
+          "items": {
+            "$ref": "#/definitions/ServiceArtifact"
+          }
+        }
+      }
+    },
+    "ServiceArtifact": {
+      "type": "object",
+      "required": ["path"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Artifact name (defaults to filename or directory name from path)"
+        },
+        "path": {
+          "type": "string",
+          "description": "Path inside the container (file or directory)"
+        }
+      }
+    },
+    "HealthCheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "test": {
+          "description": "Healthcheck command. String or Docker Compose-style array (e.g. [\"CMD-SHELL\", \"curl -f http://localhost/\"])",
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ]
+        },
+        "interval": {
+          "type": "string",
+          "description": "Health check interval (default: 1s)",
+          "default": "1s"
+        },
+        "timeout": {
+          "type": "string",
+          "description": "Health check timeout (default: 3s)",
+          "default": "3s"
+        },
+        "retries": {
+          "type": "integer",
+          "description": "Number of retries before unhealthy (default: 30)",
+          "default": 30
+        },
+        "startPeriod": {
+          "type": "string",
+          "description": "Start period before health checks count (default: 0s)",
+          "default": "0s"
+        },
+        "startInterval": {
+          "type": "string",
+          "description": "Interval between health checks during start period"
+        }
+      }
+    },
+    "SetupInstruction": {
+      "type": "object",
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": ["http"],
+          "properties": {
+            "http": {
+              "$ref": "#/definitions/SetupHTTP"
+            }
+          }
+        },
+        {
+          "required": ["cli"],
+          "properties": {
+            "cli": {
+              "$ref": "#/definitions/CLICommand"
+            }
+          }
+        }
+      ]
+    },
+    "SetupHTTP": {
+      "type": "object",
+      "required": ["target", "request"],
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Base URL (e.g. http://service:8080)"
+        },
+        "request": {
+          "$ref": "#/definitions/HTTPRequest"
+        }
+      }
+    },
+    "Execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "executor": {
+          "type": "string",
+          "description": "Executor type",
+          "enum": ["http", "cli"]
+        },
+        "target": {
+          "type": "string",
+          "description": "Base URL for HTTP executor (e.g. http://api:8080)"
+        },
+        "request": {
+          "$ref": "#/definitions/HTTPRequest",
+          "description": "HTTP request definition (for HTTP executor)"
+        },
+        "cli": {
+          "$ref": "#/definitions/CLICommand",
+          "description": "CLI command definition (for CLI executor)"
+        }
+      }
+    },
+    "HTTPRequest": {
+      "type": "object",
+      "required": ["method", "url"],
+      "additionalProperties": false,
+      "properties": {
+        "method": {
+          "type": "string",
+          "description": "HTTP method",
+          "enum": ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"]
+        },
+        "url": {
+          "type": "string",
+          "description": "Request path (e.g. /api/users)"
+        },
+        "headers": {
+          "type": "object",
+          "description": "HTTP headers",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "body": {
+          "description": "Request body: inline string, file reference, or multipart form data",
+          "oneOf": [
+            {
+              "type": "string",
+              "description": "Raw request body string"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "file": {
+                  "type": "string",
+                  "description": "Path to a file whose contents will be sent as the request body (relative to the .spark file)"
+                }
+              },
+              "required": ["file"]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "multipart": {
+                  "type": "object",
+                  "description": "Multipart form data fields",
+                  "additionalProperties": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "description": "Text field value"
+                      },
+                      {
+                        "type": "object",
+                        "description": "File upload field",
+                        "required": ["file"],
+                        "additionalProperties": false,
+                        "properties": {
+                          "file": {
+                            "type": "string",
+                            "description": "Path to file (relative to .spark file)"
+                          },
+                          "filename": {
+                            "type": "string",
+                            "description": "Override filename sent in the multipart header (defaults to basename of file path)"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              "required": ["multipart"]
+            }
+          ]
+        }
+      }
+    },
+    "CLICommand": {
+      "type": "object",
+      "required": ["service", "command"],
+      "additionalProperties": false,
+      "properties": {
+        "service": {
+          "type": "string",
+          "description": "Service container to exec the command in"
+        },
+        "command": {
+          "type": "string",
+          "description": "Shell command (passed to sh -c)"
+        },
+        "workingDir": {
+          "type": "string",
+          "description": "Working directory for execution"
+        }
+      }
+    },
+    "Assertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "statusCode": {
+          "$ref": "#/definitions/StatusCodeAssertion",
+          "description": "Assert HTTP response status code"
+        },
+        "exitCode": {
+          "$ref": "#/definitions/ExitCodeAssertion",
+          "description": "Assert CLI exit code"
+        },
+        "snapshot": {
+          "$ref": "#/definitions/SnapshotAssertion",
+          "description": "Compare output against a snapshot file"
+        },
+        "stdout": {
+          "$ref": "#/definitions/StringAssertion",
+          "description": "Assert CLI stdout content"
+        },
+        "stderr": {
+          "$ref": "#/definitions/StringAssertion",
+          "description": "Assert CLI stderr content"
+        }
+      }
+    },
+    "StatusCodeAssertion": {
+      "type": "object",
+      "required": ["equals"],
+      "additionalProperties": false,
+      "properties": {
+        "equals": {
+          "type": "integer",
+          "description": "Expected HTTP status code (e.g. 200)"
+        }
+      }
+    },
+    "ExitCodeAssertion": {
+      "type": "object",
+      "required": ["equals"],
+      "additionalProperties": false,
+      "properties": {
+        "equals": {
+          "type": "integer",
+          "description": "Expected exit code (e.g. 0)"
+        }
+      }
+    },
+    "SnapshotAssertion": {
+      "type": "object",
+      "required": ["artifact", "file"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact": {
+          "type": "string",
+          "description": "Artifact to snapshot",
+          "enum": ["responseBody", "stdout", "stderr"]
+        },
+        "file": {
+          "type": "string",
+          "description": "Path to snapshot file (relative to test file)"
+        }
+      }
+    },
+    "StringAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contains": {
+          "type": "string",
+          "description": "Check if output contains this string"
+        },
+        "equals": {
+          "type": "string",
+          "description": "Check if output equals this string exactly"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+name: ${NAME}
+
+tests:
+  - name: Service responds with 200
+    services:
+      - name: webserver
+        image: nginx:alpine
+        healthcheck:
+          test: "wget -q --spider http://localhost:80/"
+          retries: 30
+    execution:
+      executor: http
+      target: http://webserver
+      request:
+        method: GET
+        url: /
+    assertions:
+      - statusCode:
+          equals: 200
