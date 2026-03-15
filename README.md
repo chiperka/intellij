@@ -4,7 +4,7 @@ Official JetBrains plugin for [Spark](https://spark.finie.io/) — a declarative
 
 **[Install from JetBrains Marketplace](https://plugins.jetbrains.com/plugin/30418-spark-test-runner)**
 
-## IDE Plugin
+## JetBrains Plugin
 
 Run `.spark` tests directly from your editor with a single click.
 
@@ -25,6 +25,6 @@ Works with PhpStorm, IntelliJ IDEA, WebStorm, GoLand, PyCharm, and other JetBrai
 
 Spark is a declarative test runner. You define services, HTTP requests, and assertions in `.spark` files and Spark handles the rest — spinning up Docker containers, running healthchecks, executing requests, and evaluating assertions.
 
-Docker is required for tests that define services. Cloud mode (`--cloud`) runs tests on a remote server and does not require Docker locally.
+Docker is required for local use. Cloud mode (`--cloud`) runs tests on a remote server and does not require Docker locally.
 
-**[Getting started](https://spark.finie.io/getting-started)**
+**[Getting started](https://spark.finie.io/getting-started)** · **[GitHub](https://github.com/finie-io/spark-intellij)**
