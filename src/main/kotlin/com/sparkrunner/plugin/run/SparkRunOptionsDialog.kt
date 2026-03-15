@@ -3,7 +3,6 @@ package com.sparkrunner.plugin.run
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.util.ui.FormBuilder
-import com.sparkrunner.plugin.settings.SparkSettings
 import javax.swing.JCheckBox
 import javax.swing.JComponent
 
@@ -16,10 +15,8 @@ class SparkRunOptionsDialog(project: Project) : DialogWrapper(project) {
         title = "Run Spark Tests"
         setOKButtonText("Run")
 
-        val settings = SparkSettings.getInstance()
-        val hasCloudUrl = settings.cloudUrl.isNotBlank()
-        cloudModeCheckBox.isSelected = hasCloudUrl
-        cloudModeCheckBox.isEnabled = hasCloudUrl
+        cloudModeCheckBox.isSelected = false
+        cloudModeCheckBox.isEnabled = true
 
         regenerateSnapshotsCheckBox.isSelected = false
 

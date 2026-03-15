@@ -23,7 +23,6 @@ class SparkRunConfigurationEditor : SettingsEditor<SparkRunConfiguration>() {
     private val cloudUrlField = JTextField()
     private val cloudModeCheckBox = JCheckBox("Cloud mode")
     private val regenerateSnapshotsCheckBox = JCheckBox("Regenerate snapshots")
-    private val additionalArgsField = JTextField()
 
     override fun resetEditorFrom(config: SparkRunConfiguration) {
         testFilePathField.text = config.testFilePath
@@ -32,7 +31,6 @@ class SparkRunConfigurationEditor : SettingsEditor<SparkRunConfiguration>() {
         cloudUrlField.text = config.cloudUrl
         cloudModeCheckBox.isSelected = config.cloudMode
         regenerateSnapshotsCheckBox.isSelected = config.regenerateSnapshots
-        additionalArgsField.text = config.additionalArgs
         executorTypeCombo.selectedIndex = when (config.executorType) {
             SparkSettings.EXECUTOR_LOCAL -> 1
             SparkSettings.EXECUTOR_DOCKER -> 2
@@ -48,7 +46,6 @@ class SparkRunConfigurationEditor : SettingsEditor<SparkRunConfiguration>() {
         config.cloudUrl = cloudUrlField.text
         config.cloudMode = cloudModeCheckBox.isSelected
         config.regenerateSnapshots = regenerateSnapshotsCheckBox.isSelected
-        config.additionalArgs = additionalArgsField.text
         config.executorType = when (executorTypeCombo.selectedIndex) {
             1 -> SparkSettings.EXECUTOR_LOCAL
             2 -> SparkSettings.EXECUTOR_DOCKER
@@ -68,8 +65,6 @@ class SparkRunConfigurationEditor : SettingsEditor<SparkRunConfiguration>() {
             .addLabeledComponent("Cloud URL:", cloudUrlField)
             .addComponent(cloudModeCheckBox)
             .addComponent(regenerateSnapshotsCheckBox)
-            .addSeparator()
-            .addLabeledComponent("Additional arguments:", additionalArgsField)
             .addComponentFillVertically(JPanel(), 0)
             .panel
     }

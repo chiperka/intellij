@@ -33,10 +33,6 @@ class SparkRunConfiguration(
         get() = options.cloudUrl
         set(value) { options.cloudUrl = value }
 
-    var additionalArgs: String
-        get() = options.additionalArgs
-        set(value) { options.additionalArgs = value }
-
     var configurationFile: String
         get() = options.configurationFile
         set(value) { options.configurationFile = value }

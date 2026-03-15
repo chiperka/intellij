@@ -17,9 +17,6 @@ class SparkRunConfigurationOptions : RunConfigurationOptions() {
     private val cloudUrlProperty: StoredProperty<String?> =
         string("").provideDelegate(this, "cloudUrl")
 
-    private val additionalArgsProperty: StoredProperty<String?> =
-        string("").provideDelegate(this, "additionalArgs")
-
     private val configurationFileProperty: StoredProperty<String?> =
         string("").provideDelegate(this, "configurationFile")
 
@@ -44,10 +41,6 @@ class SparkRunConfigurationOptions : RunConfigurationOptions() {
     var cloudUrl: String
         get() = cloudUrlProperty.getValue(this) ?: ""
         set(value) { cloudUrlProperty.setValue(this, value) }
-
-    var additionalArgs: String
-        get() = additionalArgsProperty.getValue(this) ?: ""
-        set(value) { additionalArgsProperty.setValue(this, value) }
 
     var configurationFile: String
         get() = configurationFileProperty.getValue(this) ?: ""

@@ -2,14 +2,16 @@ package com.sparkrunner.plugin.settings
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.Configurable
-import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.util.ui.FormBuilder
-import javax.swing.*
 import java.awt.CardLayout
+import java.awt.Color
+import java.awt.FlowLayout
 import java.awt.event.ItemEvent
+import javax.swing.*
 
-class SparkSettingsConfigurable : Configurable {
+class SparkSettingsConfigurable(private val project: Project) : Configurable {
 
     private var executorTypeCombo: JComboBox<String>? = null
     private var executorCards: JPanel? = null
@@ -37,8 +39,8 @@ class SparkSettingsConfigurable : Configurable {
 
     // Common
     private var cloudUrlField: JTextField? = null
-    private var additionalArgsField: JTextField? = null
     private var configurationFileField: TextFieldWithBrowseButton? = null
+    private var testResultLabel: JLabel? = null
     private var panel: JPanel? = null
 
     override fun getDisplayName(): String = "Spark Test Runner"
@@ -135,7 +137,6 @@ class SparkSettingsConfigurable : Configurable {
 
         // Common fields
         cloudUrlField = JTextField()
-        additionalArgsField = JTextField()
         configurationFileField = TextFieldWithBrowseButton().apply {
             addBrowseFolderListener(
                 "Select Configuration File",
@@ -145,13 +146,23 @@ class SparkSettingsConfigurable : Configurable {
             )
         }
 
+        // Test connection button
+        val testButton = JButton("Test")
+        testResultLabel = JLabel()
+        testButton.addActionListener { runTestConnection() }
+        val testPanel = JPanel(FlowLayout(FlowLayout.LEFT, 0, 0))
+        testPanel.add(testButton)
+        testPanel.add(Box.createHorizontalStrut(8))
+        testPanel.add(testResultLabel)
+
         panel = FormBuilder.createFormBuilder()
             .addLabeledComponent("Interpreter:", executorTypeCombo!!)
             .addComponent(executorCards!!)
             .addSeparator()
             .addLabeledComponent("Configuration file:", configurationFileField!!)
             .addLabeledComponent("Cloud URL:", cloudUrlField!!)
-            .addLabeledComponent("Additional arguments:", additionalArgsField!!)
+            .addSeparator()
+            .addComponent(testPanel)
             .addComponentFillVertically(JPanel(), 0)
             .panel
 
@@ -159,8 +170,81 @@ class SparkSettingsConfigurable : Configurable {
         return panel!!
     }
 
+    private fun runTestConnection() {
+        testResultLabel?.text = "Testing..."
+        testResultLabel?.foreground = UIManager.getColor("Label.foreground")
+
+        Thread {
+            val command = buildTestCommand()
+            try {
+                val process = ProcessBuilder(command)
+                    .redirectErrorStream(true)
+                    .start()
+                val output = process.inputStream.bufferedReader().readText().trim()
+                val exitCode = process.waitFor()
+                SwingUtilities.invokeLater {
+                    if (exitCode == 0 && output.isNotBlank()) {
+                        testResultLabel?.text = "\u2705 $output"
+                        testResultLabel?.foreground = Color(0x59, 0xA8, 0x69)
+                    } else {
+                        val msg = output.ifBlank { "exit code $exitCode" }
+                        testResultLabel?.text = "\u274C $msg"
+                        testResultLabel?.foreground = Color(0xDB, 0x56, 0x56)
+                    }
+                }
+            } catch (e: Exception) {
+                SwingUtilities.invokeLater {
+                    testResultLabel?.text = "\u274C ${e.message}"
+                    testResultLabel?.foreground = Color(0xDB, 0x56, 0x56)
+                }
+            }
+        }.start()
+    }
+
+    private fun buildTestCommand(): List<String> {
+        return when (getSelectedExecutorType()) {
+            SparkSettings.EXECUTOR_DOCKER -> {
+                val sparkPath = dockerSparkPathField?.text?.ifBlank { "spark" } ?: "spark"
+                val mode = if (dockerModeCombo?.selectedIndex == 1) SparkSettings.DOCKER_RUN else SparkSettings.DOCKER_EXEC
+                if (mode == SparkSettings.DOCKER_RUN) {
+                    val image = dockerImageField?.text ?: ""
+                    listOf("docker", "run", "--rm", image, sparkPath, "--version")
+                } else {
+                    val container = dockerContainerField?.text ?: ""
+                    listOf("docker", "exec", container, sparkPath, "--version")
+                }
+            }
+            SparkSettings.EXECUTOR_DOCKER_COMPOSE -> {
+                val sparkPath = composeSparkPathField?.text?.ifBlank { "spark" } ?: "spark"
+                val composeFile = composeFileField?.text ?: ""
+                val service = composeServiceField?.text ?: ""
+                val projectName = composeProjectNameField?.text ?: ""
+                val mode = if (composeModeCombo?.selectedIndex == 1) SparkSettings.DOCKER_RUN else SparkSettings.DOCKER_EXEC
+                val args = mutableListOf("docker", "compose")
+                if (composeFile.isNotBlank()) {
+                    args.addAll(listOf("-f", composeFile))
+                }
+                if (projectName.isNotBlank()) {
+                    args.addAll(listOf("-p", projectName))
+                }
+                args.add(mode)
+                if (mode == SparkSettings.DOCKER_RUN) {
+                    args.add("--rm")
+                }
+                args.add(service)
+                args.add(sparkPath)
+                args.add("--version")
+                args
+            }
+            else -> {
+                val sparkPath = sparkPathField?.text?.ifBlank { "spark" } ?: "spark"
+                listOf(sparkPath, "--version")
+            }
+        }
+    }
+
     override fun isModified(): Boolean {
-        val s = SparkSettings.getInstance()
+        val s = SparkSettings.getInstance(project)
         return getSelectedExecutorType() != s.executorType
             || sparkPathField?.text != s.sparkPath
             || getSelectedDockerMode() != s.dockerMode
@@ -177,12 +261,11 @@ class SparkSettingsConfigurable : Configurable {
             || composePathMappingHostField?.text != s.composePathMappingHost
             || composePathMappingContainerField?.text != s.composePathMappingContainer
             || cloudUrlField?.text != s.cloudUrl
-            || additionalArgsField?.text != s.additionalArgs
             || configurationFileField?.text != s.configurationFile
     }
 
     override fun apply() {
-        val s = SparkSettings.getInstance()
+        val s = SparkSettings.getInstance(project)
         s.executorType = getSelectedExecutorType()
         s.sparkPath = sparkPathField?.text ?: "spark"
         s.dockerMode = getSelectedDockerMode()
@@ -199,12 +282,11 @@ class SparkSettingsConfigurable : Configurable {
         s.composePathMappingHost = composePathMappingHostField?.text ?: ""
         s.composePathMappingContainer = composePathMappingContainerField?.text ?: ""
         s.cloudUrl = cloudUrlField?.text ?: ""
-        s.additionalArgs = additionalArgsField?.text ?: ""
         s.configurationFile = configurationFileField?.text ?: ""
     }
 
     override fun reset() {
-        val s = SparkSettings.getInstance()
+        val s = SparkSettings.getInstance(project)
         executorTypeCombo?.selectedIndex = when (s.executorType) {
             SparkSettings.EXECUTOR_DOCKER -> 1
             SparkSettings.EXECUTOR_DOCKER_COMPOSE -> 2
@@ -215,7 +297,7 @@ class SparkSettingsConfigurable : Configurable {
         dockerContainerField?.text = s.dockerContainer
         dockerImageField?.text = s.dockerImage
         dockerSparkPathField?.text = s.dockerSparkPath
-        val projectBasePath = ProjectManager.getInstance().openProjects.firstOrNull()?.basePath ?: ""
+        val projectBasePath = project.basePath ?: ""
         dockerPathMappingHostField?.text = s.dockerPathMappingHost.ifBlank { projectBasePath }
         dockerPathMappingContainerField?.text = s.dockerPathMappingContainer.ifBlank { "/code" }
         composeFileField?.text = s.composeFile
@@ -226,7 +308,6 @@ class SparkSettingsConfigurable : Configurable {
         composePathMappingHostField?.text = s.composePathMappingHost.ifBlank { projectBasePath }
         composePathMappingContainerField?.text = s.composePathMappingContainer.ifBlank { "/code" }
         cloudUrlField?.text = s.cloudUrl
-        additionalArgsField?.text = s.additionalArgs
         configurationFileField?.text = s.configurationFile
 
         val cardLayout = executorCards?.layout as? CardLayout
@@ -234,6 +315,8 @@ class SparkSettingsConfigurable : Configurable {
 
         val dockerCardLayout = dockerModeCards?.layout as? CardLayout
         dockerCardLayout?.show(dockerModeCards, s.dockerMode)
+
+        testResultLabel?.text = ""
     }
 
     override fun disposeUIResources() {
@@ -255,8 +338,8 @@ class SparkSettingsConfigurable : Configurable {
         composePathMappingHostField = null
         composePathMappingContainerField = null
         cloudUrlField = null
-        additionalArgsField = null
         configurationFileField = null
+        testResultLabel = null
         panel = null
     }
 

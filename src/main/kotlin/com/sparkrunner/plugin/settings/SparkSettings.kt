@@ -1,12 +1,12 @@
 package com.sparkrunner.plugin.settings
 
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
+import com.intellij.openapi.project.Project
 
-@Service
+@Service(Service.Level.PROJECT)
 @State(
     name = "com.sparkrunner.plugin.settings.SparkSettings",
     storages = [Storage("SparkTestRunner.xml")]
@@ -29,8 +29,7 @@ class SparkSettings : PersistentStateComponent<SparkSettings.State> {
         var composeSparkPath: String = "spark",
         var composePathMappingHost: String = "",
         var composePathMappingContainer: String = "",
-        var cloudUrl: String = "",
-        var additionalArgs: String = "",
+        var cloudUrl: String = "https://spark-cloud.finie.io",
         var configurationFile: String = ""
     )
 
@@ -106,10 +105,6 @@ class SparkSettings : PersistentStateComponent<SparkSettings.State> {
         get() = state.cloudUrl
         set(value) { state.cloudUrl = value }
 
-    var additionalArgs: String
-        get() = state.additionalArgs
-        set(value) { state.additionalArgs = value }
-
     var configurationFile: String
         get() = state.configurationFile
         set(value) { state.configurationFile = value }
@@ -142,7 +137,7 @@ class SparkSettings : PersistentStateComponent<SparkSettings.State> {
         const val DOCKER_EXEC = "exec"
         const val DOCKER_RUN = "run"
 
-        fun getInstance(): SparkSettings =
-            ApplicationManager.getApplication().getService(SparkSettings::class.java)
+        fun getInstance(project: Project): SparkSettings =
+            project.getService(SparkSettings::class.java)
     }
 }

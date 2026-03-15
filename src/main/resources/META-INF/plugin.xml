@@ -62,10 +62,10 @@
     <depends>com.intellij.modules.json</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService
+        <projectService
             serviceImplementation="com.sparkrunner.plugin.settings.SparkSettings"/>
 
-        <applicationConfigurable
+        <projectConfigurable
             parentId="tools"
             instance="com.sparkrunner.plugin.settings.SparkSettingsConfigurable"
             id="com.sparkrunner.plugin.settings.SparkSettingsConfigurable"

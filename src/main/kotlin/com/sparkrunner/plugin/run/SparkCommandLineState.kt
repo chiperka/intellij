@@ -27,7 +27,7 @@ class SparkCommandLineState(
     }
 
     override fun startProcess(): ProcessHandler {
-        val settings = SparkSettings.getInstance()
+        val settings = SparkSettings.getInstance(config.project)
         val commandLine = buildCommandLine(settings)
         val handler = ColoredProcessHandler(commandLine)
         return handler
@@ -64,15 +64,6 @@ class SparkCommandLineState(
         val effectiveCloudUrl = config.cloudUrl.ifBlank { settings.cloudUrl }
         if (config.cloudMode) {
             sparkArgs.add("--cloud")
-        }
-
-        val effectiveArgs = config.additionalArgs.ifBlank { settings.additionalArgs }
-        if (effectiveArgs.isNotBlank()) {
-            for (arg in effectiveArgs.split("\\s+".toRegex())) {
-                if (arg.isNotBlank()) {
-                    sparkArgs.add(arg)
-                }
-            }
         }
 
         val executorType = config.executorType.ifBlank { settings.executorType }
