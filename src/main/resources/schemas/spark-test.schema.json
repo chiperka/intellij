@@ -68,6 +68,13 @@
           "items": {
             "$ref": "#/definitions/Assertion"
           }
+        },
+        "teardown": {
+          "type": "array",
+          "description": "Teardown steps run after execution and assertions but before services are stopped",
+          "items": {
+            "$ref": "#/definitions/SetupInstruction"
+          }
         }
       }
     },

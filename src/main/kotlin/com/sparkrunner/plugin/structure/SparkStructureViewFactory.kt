@@ -82,6 +82,9 @@ private class SparkTestElement(private val mapping: YAMLMapping) : PsiTreeElemen
         mapping.getKeyValueByKey("assertions")?.let { kv ->
             children.add(SparkSectionElement(kv, "assertions", AllIcons.Nodes.EntryPoints))
         }
+        mapping.getKeyValueByKey("teardown")?.let { kv ->
+            children.add(SparkSectionElement(kv, "teardown", AllIcons.Actions.Uninstall))
+        }
 
         return children
     }
@@ -102,7 +105,7 @@ private class SparkSectionElement(
 
         return when (label) {
             "services" -> servicesChildren(value)
-            "setup" -> setupChildren(value)
+            "setup", "teardown" -> setupChildren(value)
             "assertions" -> assertionChildren(value)
             "execution" -> executionChildren(value)
             else -> emptyList()
