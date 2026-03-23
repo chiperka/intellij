@@ -343,78 +343,198 @@
     "Assertion": {
       "type": "object",
       "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": ["response"],
+          "properties": {
+            "response": {
+              "$ref": "#/definitions/ResponseAssertion"
+            }
+          }
+        },
+        {
+          "required": ["cli"],
+          "properties": {
+            "cli": {
+              "$ref": "#/definitions/CLIAssertion"
+            }
+          }
+        },
+        {
+          "required": ["artifact"],
+          "properties": {
+            "artifact": {
+              "$ref": "#/definitions/ArtifactAssertion"
+            }
+          }
+        }
+      ]
+    },
+    "ResponseAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Assertions for HTTP response properties",
       "properties": {
         "statusCode": {
-          "$ref": "#/definitions/StatusCodeAssertion",
-          "description": "Assert HTTP response status code"
-        },
-        "exitCode": {
-          "$ref": "#/definitions/ExitCodeAssertion",
-          "description": "Assert CLI exit code"
-        },
-        "snapshot": {
-          "$ref": "#/definitions/SnapshotAssertion",
-          "description": "Compare output against a snapshot file"
-        },
-        "stdout": {
-          "$ref": "#/definitions/StringAssertion",
-          "description": "Assert CLI stdout content"
-        },
-        "stderr": {
-          "$ref": "#/definitions/StringAssertion",
-          "description": "Assert CLI stderr content"
-        }
-      }
-    },
-    "StatusCodeAssertion": {
-      "type": "object",
-      "required": ["equals"],
-      "additionalProperties": false,
-      "properties": {
-        "equals": {
           "type": "integer",
           "description": "Expected HTTP status code (e.g. 200)"
+        },
+        "headers": {
+          "type": "object",
+          "description": "Header assertions keyed by header name",
+          "additionalProperties": {
+            "$ref": "#/definitions/HeaderMatcher"
+          }
+        },
+        "body": {
+          "$ref": "#/definitions/ResponseBodyAssertion",
+          "description": "Response body assertions"
+        },
+        "time": {
+          "$ref": "#/definitions/ResponseTimeAssertion",
+          "description": "Response time assertions"
         }
       }
     },
-    "ExitCodeAssertion": {
+    "HeaderMatcher": {
       "type": "object",
-      "required": ["equals"],
       "additionalProperties": false,
+      "description": "Matcher for a single HTTP response header",
       "properties": {
         "equals": {
+          "type": "string",
+          "description": "Header value must equal this string exactly"
+        },
+        "contains": {
+          "type": "string",
+          "description": "Header value must contain this substring"
+        },
+        "exists": {
+          "type": "boolean",
+          "description": "Assert that the header exists (true) or does not exist (false)"
+        }
+      }
+    },
+    "ResponseBodyAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Assertions for the HTTP response body",
+      "properties": {
+        "jsonPath": {
+          "type": "array",
+          "description": "JSONPath assertions on the response body",
+          "items": {
+            "type": "object",
+            "required": ["path", "expected"],
+            "additionalProperties": false,
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "JSONPath expression starting with $"
+              },
+              "expected": {
+                "description": "Expected value, or 'exists' to check field presence",
+                "oneOf": [
+                  { "type": "string" },
+                  { "type": "number" },
+                  { "type": "boolean" }
+                ]
+              }
+            }
+          }
+        },
+        "contains": {
+          "type": "string",
+          "description": "Response body must contain this substring"
+        },
+        "equals": {
+          "type": "string",
+          "description": "Response body must equal this string exactly"
+        },
+        "minSize": {
+          "type": "integer",
+          "description": "Minimum response body size in bytes"
+        },
+        "snapshot": {
+          "type": "string",
+          "description": "Path to a snapshot file for body comparison (relative to .spark file)"
+        }
+      }
+    },
+    "ResponseTimeAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Assertions for HTTP response timing",
+      "properties": {
+        "maxMs": {
+          "type": "integer",
+          "description": "Maximum allowed response time in milliseconds"
+        }
+      }
+    },
+    "CLIAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Assertions for CLI command execution results",
+      "properties": {
+        "exitCode": {
           "type": "integer",
           "description": "Expected exit code (e.g. 0)"
-        }
-      }
-    },
-    "SnapshotAssertion": {
-      "type": "object",
-      "required": ["artifact", "file"],
-      "additionalProperties": false,
-      "properties": {
-        "artifact": {
-          "type": "string",
-          "description": "Artifact to snapshot",
-          "enum": ["responseBody", "stdout", "stderr"]
         },
-        "file": {
-          "type": "string",
-          "description": "Path to snapshot file (relative to test file)"
+        "stdout": {
+          "$ref": "#/definitions/CLIOutputAssertion",
+          "description": "Assertions on standard output"
+        },
+        "stderr": {
+          "$ref": "#/definitions/CLIOutputAssertion",
+          "description": "Assertions on standard error"
         }
       }
     },
-    "StringAssertion": {
+    "CLIOutputAssertion": {
       "type": "object",
       "additionalProperties": false,
+      "description": "Assertions for a CLI output stream (stdout or stderr)",
       "properties": {
         "contains": {
           "type": "string",
-          "description": "Check if output contains this string"
+          "description": "Output must contain this substring"
         },
         "equals": {
           "type": "string",
-          "description": "Check if output equals this string exactly"
+          "description": "Output must equal this string exactly"
+        },
+        "snapshot": {
+          "type": "string",
+          "description": "Path to a snapshot file for comparison (relative to .spark file)"
+        }
+      }
+    },
+    "ArtifactAssertion": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "description": "Assertions for service artifacts collected after test execution",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the artifact (matches the artifact name or filename from service definition)"
+        },
+        "exists": {
+          "type": "boolean",
+          "description": "Assert that the artifact exists (true) or does not exist (false)"
+        },
+        "minSize": {
+          "type": "integer",
+          "description": "Minimum artifact file size in bytes"
+        },
+        "maxSize": {
+          "type": "integer",
+          "description": "Maximum artifact file size in bytes"
+        },
+        "snapshot": {
+          "type": "string",
+          "description": "Path to a reference file for content comparison (relative to .spark file)"
         }
       }
     }

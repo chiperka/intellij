@@ -15,5 +15,5 @@ tests:
         method: GET
         url: /
     assertions:
-      - statusCode:
-          equals: 200
+      - response:
+          statusCode: 200
