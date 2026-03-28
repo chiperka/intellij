@@ -29,7 +29,7 @@ class SparkSettings : PersistentStateComponent<SparkSettings.State> {
         var composeSparkPath: String = "spark",
         var composePathMappingHost: String = "",
         var composePathMappingContainer: String = "",
-        var cloudUrl: String = "https://spark-cloud.finie.io",
+        var cloudUrl: String = "",
         var configurationFile: String = ""
     )
 

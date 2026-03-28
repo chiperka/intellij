@@ -160,7 +160,7 @@ class SparkSettingsConfigurable(private val project: Project) : Configurable {
             .addComponent(executorCards!!)
             .addSeparator()
             .addLabeledComponent("Configuration file:", configurationFileField!!)
-            .addLabeledComponent("Cloud URL:", cloudUrlField!!)
+            .addLabeledComponent("Cloud URL (override):", cloudUrlField!!)
             .addSeparator()
             .addComponent(testPanel)
             .addComponentFillVertically(JPanel(), 0)

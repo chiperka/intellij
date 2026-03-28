@@ -62,7 +62,7 @@ class SparkRunConfigurationEditor : SettingsEditor<SparkRunConfiguration>() {
             .addLabeledComponent("Filter:", filterNameField)
             .addLabeledComponent("Configuration:", configurationFileField)
             .addSeparator()
-            .addLabeledComponent("Cloud URL:", cloudUrlField)
+            .addLabeledComponent("Cloud URL (override):", cloudUrlField)
             .addComponent(cloudModeCheckBox)
             .addComponent(regenerateSnapshotsCheckBox)
             .addComponentFillVertically(JPanel(), 0)
