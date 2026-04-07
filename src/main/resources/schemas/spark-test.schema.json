@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Spark Test Suite",
-  "description": "Schema for Spark test files (*.spark)",
+  "title": "Chiperka Test Suite",
+  "description": "Schema for Chiperka test files (*.chiperka)",
   "type": "object",
   "required": ["name", "tests"],
   "additionalProperties": false,
@@ -84,7 +84,7 @@
       "properties": {
         "ref": {
           "type": "string",
-          "description": "Reference to a service template defined in spark.yaml"
+          "description": "Reference to a service template defined in chiperka.yaml"
         },
         "name": {
           "type": "string",
@@ -277,7 +277,7 @@
               "properties": {
                 "file": {
                   "type": "string",
-                  "description": "Path to a file whose contents will be sent as the request body (relative to the .spark file)"
+                  "description": "Path to a file whose contents will be sent as the request body (relative to the .chiperka file)"
                 }
               },
               "required": ["file"]
@@ -303,7 +303,7 @@
                         "properties": {
                           "file": {
                             "type": "string",
-                            "description": "Path to file (relative to .spark file)"
+                            "description": "Path to file (relative to .chiperka file)"
                           },
                           "filename": {
                             "type": "string",
@@ -457,7 +457,7 @@
         },
         "snapshot": {
           "type": "string",
-          "description": "Path to a snapshot file for body comparison (relative to .spark file)"
+          "description": "Path to a snapshot file for body comparison (relative to .chiperka file)"
         }
       }
     },
@@ -506,7 +506,7 @@
         },
         "snapshot": {
           "type": "string",
-          "description": "Path to a snapshot file for comparison (relative to .spark file)"
+          "description": "Path to a snapshot file for comparison (relative to .chiperka file)"
         }
       }
     },
@@ -534,7 +534,7 @@
         },
         "snapshot": {
           "type": "string",
-          "description": "Path to a reference file for content comparison (relative to .spark file)"
+          "description": "Path to a reference file for content comparison (relative to .chiperka file)"
         }
       }
     }

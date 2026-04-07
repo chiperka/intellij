@@ -1,4 +1,4 @@
-package com.sparkrunner.plugin.structure
+package com.chiperkarunner.plugin.structure
 
 import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.PsiTreeElementBase
@@ -10,23 +10,23 @@ import org.jetbrains.yaml.psi.*
 import javax.swing.Icon
 import com.intellij.icons.AllIcons
 
-class SparkStructureViewFactory : PsiStructureViewFactory {
+class ChiperkaStructureViewFactory : PsiStructureViewFactory {
     override fun getStructureViewBuilder(psiFile: PsiFile): StructureViewBuilder? {
-        if (!psiFile.name.endsWith(".spark")) return null
+        if (!psiFile.name.endsWith(".chiperka")) return null
         val yamlFile = psiFile as? YAMLFile ?: return null
 
         return object : TreeBasedStructureViewBuilder() {
             override fun createStructureViewModel(editor: Editor?): StructureViewModel {
-                return SparkStructureViewModel(yamlFile, editor)
+                return ChiperkaStructureViewModel(yamlFile, editor)
             }
         }
     }
 }
 
-private class SparkStructureViewModel(
+private class ChiperkaStructureViewModel(
     file: YAMLFile,
     editor: Editor?,
-) : StructureViewModelBase(file, editor, SparkFileElement(file)), StructureViewModel.ElementInfoProvider {
+) : StructureViewModelBase(file, editor, ChiperkaFileElement(file)), StructureViewModel.ElementInfoProvider {
 
     override fun getSorters(): Array<Sorter> = arrayOf(Sorter.ALPHA_SORTER)
 
@@ -35,7 +35,7 @@ private class SparkStructureViewModel(
     override fun isAlwaysLeaf(element: StructureViewTreeElement): Boolean = false
 }
 
-private class SparkFileElement(private val file: YAMLFile) : PsiTreeElementBase<YAMLFile>(file) {
+private class ChiperkaFileElement(private val file: YAMLFile) : PsiTreeElementBase<YAMLFile>(file) {
 
     override fun getPresentableText(): String {
         val doc = file.documents.firstOrNull() ?: return file.name
@@ -54,12 +54,12 @@ private class SparkFileElement(private val file: YAMLFile) : PsiTreeElementBase<
 
         return seq.items.mapNotNull { item ->
             val testMapping = item.value as? YAMLMapping ?: return@mapNotNull null
-            SparkTestElement(testMapping)
+            ChiperkaTestElement(testMapping)
         }
     }
 }
 
-private class SparkTestElement(private val mapping: YAMLMapping) : PsiTreeElementBase<YAMLMapping>(mapping) {
+private class ChiperkaTestElement(private val mapping: YAMLMapping) : PsiTreeElementBase<YAMLMapping>(mapping) {
 
     override fun getPresentableText(): String {
         return mapping.getKeyValueByKey("name")?.valueText ?: "unnamed test"
@@ -71,26 +71,26 @@ private class SparkTestElement(private val mapping: YAMLMapping) : PsiTreeElemen
         val children = mutableListOf<StructureViewTreeElement>()
 
         mapping.getKeyValueByKey("services")?.let { kv ->
-            children.add(SparkSectionElement(kv, "services", AllIcons.Nodes.Deploy))
+            children.add(ChiperkaSectionElement(kv, "services", AllIcons.Nodes.Deploy))
         }
         mapping.getKeyValueByKey("setup")?.let { kv ->
-            children.add(SparkSectionElement(kv, "setup", AllIcons.Actions.Install))
+            children.add(ChiperkaSectionElement(kv, "setup", AllIcons.Actions.Install))
         }
         mapping.getKeyValueByKey("execution")?.let { kv ->
-            children.add(SparkSectionElement(kv, "execution", AllIcons.Actions.Execute))
+            children.add(ChiperkaSectionElement(kv, "execution", AllIcons.Actions.Execute))
         }
         mapping.getKeyValueByKey("assertions")?.let { kv ->
-            children.add(SparkSectionElement(kv, "assertions", AllIcons.Nodes.EntryPoints))
+            children.add(ChiperkaSectionElement(kv, "assertions", AllIcons.Nodes.EntryPoints))
         }
         mapping.getKeyValueByKey("teardown")?.let { kv ->
-            children.add(SparkSectionElement(kv, "teardown", AllIcons.Actions.Uninstall))
+            children.add(ChiperkaSectionElement(kv, "teardown", AllIcons.Actions.Uninstall))
         }
 
         return children
     }
 }
 
-private class SparkSectionElement(
+private class ChiperkaSectionElement(
     private val kv: YAMLKeyValue,
     private val label: String,
     private val sectionIcon: Icon,
@@ -121,7 +121,7 @@ private class SparkSectionElement(
                 ?: "unknown"
             val image = m.getKeyValueByKey("image")?.valueText
             val text = if (image != null) "$name ($image)" else name
-            SparkLeafElement(m, text, AllIcons.Nodes.Plugin)
+            ChiperkaLeafElement(m, text, AllIcons.Nodes.Plugin)
         }
     }
 
@@ -146,7 +146,7 @@ private class SparkSectionElement(
                 }
                 else -> "step ${i + 1}"
             }
-            SparkLeafElement(m, text, AllIcons.Nodes.RunnableMark)
+            ChiperkaLeafElement(m, text, AllIcons.Nodes.RunnableMark)
         }
     }
 
@@ -174,7 +174,7 @@ private class SparkSectionElement(
                 }
                 else -> type
             }
-            SparkLeafElement(m, detail, AllIcons.Nodes.EntryPoints)
+            ChiperkaLeafElement(m, detail, AllIcons.Nodes.EntryPoints)
         }
     }
 
@@ -197,11 +197,11 @@ private class SparkSectionElement(
             }
             else -> executor
         }
-        return listOf(SparkLeafElement(m, text, AllIcons.Nodes.RunnableMark))
+        return listOf(ChiperkaLeafElement(m, text, AllIcons.Nodes.RunnableMark))
     }
 }
 
-private class SparkLeafElement(
+private class ChiperkaLeafElement(
     private val psi: YAMLMapping,
     private val text: String,
     private val leafIcon: Icon,

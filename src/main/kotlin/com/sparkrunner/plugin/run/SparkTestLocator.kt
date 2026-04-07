@@ -1,4 +1,4 @@
-package com.sparkrunner.plugin.run
+package com.chiperkarunner.plugin.run
 
 import com.intellij.execution.Location
 import com.intellij.execution.PsiLocation
@@ -12,20 +12,20 @@ import org.jetbrains.yaml.psi.YAMLMapping
 import org.jetbrains.yaml.psi.YAMLSequence
 
 /**
- * SMTestLocator for Spark test files.
+ * SMTestLocator for Chiperka test files.
  *
  * Parses locationHint URLs in the format:
- *   spark:///path/to/file.spark::testName   (navigates to test)
- *   spark:///path/to/file.spark             (navigates to suite/file)
+ *   chiperka:///path/to/file.chiperka::testName   (navigates to test)
+ *   chiperka:///path/to/file.chiperka             (navigates to suite/file)
  *
  * When a user clicks a test in the Test Runner tree, IntelliJ calls this locator
- * to resolve the source location and navigate to the corresponding .spark file.
+ * to resolve the source location and navigate to the corresponding .chiperka file.
  */
-class SparkTestLocator : SMTestLocator {
+class ChiperkaTestLocator : SMTestLocator {
 
     companion object {
-        val INSTANCE = SparkTestLocator()
-        const val PROTOCOL = "spark"
+        val INSTANCE = ChiperkaTestLocator()
+        const val PROTOCOL = "chiperka"
     }
 
     override fun getLocation(
@@ -60,7 +60,7 @@ class SparkTestLocator : SMTestLocator {
     }
 
     /**
-     * Parses "path/to/file.spark::testName" into (filePath, testName).
+     * Parses "path/to/file.chiperka::testName" into (filePath, testName).
      * If no "::" separator, testName is null.
      */
     private fun parsePath(path: String): Pair<String, String?> {
@@ -70,7 +70,7 @@ class SparkTestLocator : SMTestLocator {
     }
 
     /**
-     * Finds the YAML key-value element for a test name within a .spark file.
+     * Finds the YAML key-value element for a test name within a .chiperka file.
      * Looks in the "tests" array for a mapping with name: <testName>.
      */
     private fun findTestElement(yamlFile: YAMLFile, testName: String): com.intellij.psi.PsiElement? {

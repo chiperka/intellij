@@ -1,19 +1,19 @@
-package com.sparkrunner.plugin.run
+package com.chiperkarunner.plugin.run
 
 import com.intellij.execution.configurations.ConfigurationTypeBase
-import com.sparkrunner.plugin.SparkIcons
+import com.chiperkarunner.plugin.ChiperkaIcons
 
-class SparkRunConfigurationType : ConfigurationTypeBase(
+class ChiperkaRunConfigurationType : ConfigurationTypeBase(
     ID,
-    "Spark Test",
-    "Run Spark test files",
-    SparkIcons.Spark
+    "Chiperka Test",
+    "Run Chiperka test files",
+    ChiperkaIcons.Chiperka
 ) {
     init {
-        addFactory(SparkRunConfigurationFactory(this))
+        addFactory(ChiperkaRunConfigurationFactory(this))
     }
 
     companion object {
-        const val ID = "SparkRunConfiguration"
+        const val ID = "ChiperkaRunConfiguration"
     }
 }

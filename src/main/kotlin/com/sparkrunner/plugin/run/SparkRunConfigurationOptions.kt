@@ -1,9 +1,9 @@
-package com.sparkrunner.plugin.run
+package com.chiperkarunner.plugin.run
 
 import com.intellij.execution.configurations.RunConfigurationOptions
 import com.intellij.openapi.components.StoredProperty
 
-class SparkRunConfigurationOptions : RunConfigurationOptions() {
+class ChiperkaRunConfigurationOptions : RunConfigurationOptions() {
 
     private val testFilePathProperty: StoredProperty<String?> =
         string("").provideDelegate(this, "testFilePath")

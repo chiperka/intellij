@@ -1,15 +1,15 @@
-package com.sparkrunner.plugin.run
+package com.chiperkarunner.plugin.run
 
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.util.ui.FormBuilder
-import com.sparkrunner.plugin.settings.SparkSettings
+import com.chiperkarunner.plugin.settings.ChiperkaSettings
 import javax.swing.JCheckBox
 import javax.swing.JComboBox
 import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.JTextField
 
-class SparkRunConfigurationEditor : SettingsEditor<SparkRunConfiguration>() {
+class ChiperkaRunConfigurationEditor : SettingsEditor<ChiperkaRunConfiguration>() {
 
     private val executorTypeCombo = JComboBox(arrayOf(
         "Default (from Settings)",
@@ -24,7 +24,7 @@ class SparkRunConfigurationEditor : SettingsEditor<SparkRunConfiguration>() {
     private val cloudModeCheckBox = JCheckBox("Cloud mode")
     private val regenerateSnapshotsCheckBox = JCheckBox("Regenerate snapshots")
 
-    override fun resetEditorFrom(config: SparkRunConfiguration) {
+    override fun resetEditorFrom(config: ChiperkaRunConfiguration) {
         testFilePathField.text = config.testFilePath
         filterNameField.text = config.filterName
         configurationFileField.text = config.configurationFile
@@ -32,14 +32,14 @@ class SparkRunConfigurationEditor : SettingsEditor<SparkRunConfiguration>() {
         cloudModeCheckBox.isSelected = config.cloudMode
         regenerateSnapshotsCheckBox.isSelected = config.regenerateSnapshots
         executorTypeCombo.selectedIndex = when (config.executorType) {
-            SparkSettings.EXECUTOR_LOCAL -> 1
-            SparkSettings.EXECUTOR_DOCKER -> 2
-            SparkSettings.EXECUTOR_DOCKER_COMPOSE -> 3
+            ChiperkaSettings.EXECUTOR_LOCAL -> 1
+            ChiperkaSettings.EXECUTOR_DOCKER -> 2
+            ChiperkaSettings.EXECUTOR_DOCKER_COMPOSE -> 3
             else -> 0
         }
     }
 
-    override fun applyEditorTo(config: SparkRunConfiguration) {
+    override fun applyEditorTo(config: ChiperkaRunConfiguration) {
         config.testFilePath = testFilePathField.text
         config.filterName = filterNameField.text
         config.configurationFile = configurationFileField.text
@@ -47,9 +47,9 @@ class SparkRunConfigurationEditor : SettingsEditor<SparkRunConfiguration>() {
         config.cloudMode = cloudModeCheckBox.isSelected
         config.regenerateSnapshots = regenerateSnapshotsCheckBox.isSelected
         config.executorType = when (executorTypeCombo.selectedIndex) {
-            1 -> SparkSettings.EXECUTOR_LOCAL
-            2 -> SparkSettings.EXECUTOR_DOCKER
-            3 -> SparkSettings.EXECUTOR_DOCKER_COMPOSE
+            1 -> ChiperkaSettings.EXECUTOR_LOCAL
+            2 -> ChiperkaSettings.EXECUTOR_DOCKER
+            3 -> ChiperkaSettings.EXECUTOR_DOCKER_COMPOSE
             else -> ""
         }
     }

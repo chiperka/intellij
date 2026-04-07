@@ -1,4 +1,4 @@
-package com.sparkrunner.plugin.run
+package com.chiperkarunner.plugin.run
 
 import com.intellij.execution.DefaultExecutionResult
 import com.intellij.execution.ExecutionResult
@@ -12,68 +12,68 @@ import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.runners.ProgramRunner
 import com.intellij.execution.testframework.sm.SMTestRunnerConnectionUtil
-import com.sparkrunner.plugin.settings.SparkSettings
+import com.chiperkarunner.plugin.settings.ChiperkaSettings
 
-class SparkCommandLineState(
-    private val config: SparkRunConfiguration,
+class ChiperkaCommandLineState(
+    private val config: ChiperkaRunConfiguration,
     environment: ExecutionEnvironment
 ) : CommandLineState(environment) {
 
     override fun execute(executor: Executor, runner: ProgramRunner<*>): ExecutionResult {
         val processHandler = startProcess()
-        val properties = SparkTestConsoleProperties(config, executor)
-        val consoleView = SMTestRunnerConnectionUtil.createAndAttachConsole("Spark", processHandler, properties)
+        val properties = ChiperkaTestConsoleProperties(config, executor)
+        val consoleView = SMTestRunnerConnectionUtil.createAndAttachConsole("Chiperka", processHandler, properties)
         return DefaultExecutionResult(consoleView, processHandler)
     }
 
     override fun startProcess(): ProcessHandler {
-        val settings = SparkSettings.getInstance(config.project)
+        val settings = ChiperkaSettings.getInstance(config.project)
         val commandLine = buildCommandLine(settings)
         val handler = ColoredProcessHandler(commandLine)
         return handler
     }
 
-    private fun buildCommandLine(settings: SparkSettings): GeneralCommandLine {
+    private fun buildCommandLine(settings: ChiperkaSettings): GeneralCommandLine {
         val mappedTestPath = settings.mapPath(config.testFilePath)
-        val sparkArgs = mutableListOf("run", mappedTestPath)
+        val chiperkaArgs = mutableListOf("run", mappedTestPath)
 
         // Always add --teamcity for IDE test runner integration
-        sparkArgs.add("--teamcity")
+        chiperkaArgs.add("--teamcity")
 
         if (config.filterName.isNotBlank()) {
-            sparkArgs.add("--filter")
-            sparkArgs.add(config.filterName)
+            chiperkaArgs.add("--filter")
+            chiperkaArgs.add(config.filterName)
         }
 
         if (config.regenerateSnapshots) {
-            sparkArgs.add("--regenerate-snapshots")
+            chiperkaArgs.add("--regenerate-snapshots")
         }
 
         val effectiveConfigFile = config.configurationFile.ifBlank { settings.configurationFile }
         if (effectiveConfigFile.isNotBlank()) {
-            sparkArgs.add("--configuration")
-            sparkArgs.add(settings.mapPath(effectiveConfigFile))
+            chiperkaArgs.add("--configuration")
+            chiperkaArgs.add(settings.mapPath(effectiveConfigFile))
         }
 
         val pathMappingArg = settings.pathMappingArg()
         if (pathMappingArg.isNotBlank()) {
-            sparkArgs.add("--path-mapping")
-            sparkArgs.add(pathMappingArg)
+            chiperkaArgs.add("--path-mapping")
+            chiperkaArgs.add(pathMappingArg)
         }
 
         val effectiveCloudUrl = config.cloudUrl.ifBlank { settings.cloudUrl }
         if (config.cloudMode) {
-            sparkArgs.add("--cloud")
+            chiperkaArgs.add("--cloud")
         }
 
         val executorType = config.executorType.ifBlank { settings.executorType }
         val commandLine = GeneralCommandLine()
 
         when (executorType) {
-            SparkSettings.EXECUTOR_DOCKER -> {
-                val sparkPath = settings.dockerSparkPath.ifBlank { "spark" }
+            ChiperkaSettings.EXECUTOR_DOCKER -> {
+                val chiperkaPath = settings.dockerChiperkaPath.ifBlank { "chiperka" }
                 commandLine.exePath = "docker"
-                if (settings.dockerMode == SparkSettings.DOCKER_RUN) {
+                if (settings.dockerMode == ChiperkaSettings.DOCKER_RUN) {
                     val image = settings.dockerImage
                     commandLine.addParameter("run")
                     commandLine.addParameter("--rm")
@@ -85,13 +85,13 @@ class SparkCommandLineState(
                     commandLine.addParameter("-i")
                     commandLine.addParameter(container)
                 }
-                commandLine.addParameter(sparkPath)
-                commandLine.addParameters(sparkArgs)
+                commandLine.addParameter(chiperkaPath)
+                commandLine.addParameters(chiperkaArgs)
             }
-            SparkSettings.EXECUTOR_DOCKER_COMPOSE -> {
+            ChiperkaSettings.EXECUTOR_DOCKER_COMPOSE -> {
                 val composeFile = settings.composeFile
                 val service = settings.composeService
-                val sparkPath = settings.composeSparkPath.ifBlank { "spark" }
+                val chiperkaPath = settings.composeChiperkaPath.ifBlank { "chiperka" }
                 commandLine.exePath = "docker"
                 commandLine.addParameter("compose")
                 if (composeFile.isNotBlank()) {
@@ -105,22 +105,22 @@ class SparkCommandLineState(
                 }
                 commandLine.addParameter(settings.composeMode)
                 commandLine.addParameter("-i")
-                if (settings.composeMode == SparkSettings.DOCKER_RUN) {
+                if (settings.composeMode == ChiperkaSettings.DOCKER_RUN) {
                     commandLine.addParameter("--rm")
                 }
                 commandLine.addParameter(service)
-                commandLine.addParameter(sparkPath)
-                commandLine.addParameters(sparkArgs)
+                commandLine.addParameter(chiperkaPath)
+                commandLine.addParameters(chiperkaArgs)
             }
             else -> {
-                val sparkPath = settings.sparkPath.ifBlank { "spark" }
-                commandLine.exePath = sparkPath
-                commandLine.addParameters(sparkArgs)
+                val chiperkaPath = settings.chiperkaPath.ifBlank { "chiperka" }
+                commandLine.exePath = chiperkaPath
+                commandLine.addParameters(chiperkaArgs)
             }
         }
 
         if (effectiveCloudUrl.isNotBlank()) {
-            commandLine.withEnvironment("SPARK_CLOUD_URL", effectiveCloudUrl)
+            commandLine.withEnvironment("CHIPERKA_CLOUD_URL", effectiveCloudUrl)
         }
 
         commandLine.withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)

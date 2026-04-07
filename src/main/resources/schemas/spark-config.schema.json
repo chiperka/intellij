@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Spark Configuration",
-  "description": "Schema for Spark configuration files (spark.yaml / spark.yml)",
+  "title": "Chiperka Configuration",
+  "description": "Schema for Chiperka configuration files (chiperka.yaml / chiperka.yml)",
   "type": "object",
   "additionalProperties": false,
   "properties": {

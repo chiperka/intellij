@@ -1,4 +1,4 @@
-package com.sparkrunner.plugin.settings
+package com.chiperkarunner.plugin.settings
 
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.Service
@@ -8,25 +8,25 @@ import com.intellij.openapi.project.Project
 
 @Service(Service.Level.PROJECT)
 @State(
-    name = "com.sparkrunner.plugin.settings.SparkSettings",
-    storages = [Storage("SparkTestRunner.xml")]
+    name = "com.chiperkarunner.plugin.settings.ChiperkaSettings",
+    storages = [Storage("ChiperkaTestRunner.xml")]
 )
-class SparkSettings : PersistentStateComponent<SparkSettings.State> {
+class ChiperkaSettings : PersistentStateComponent<ChiperkaSettings.State> {
 
     data class State(
         var executorType: String = EXECUTOR_LOCAL,
-        var sparkPath: String = "spark",
+        var chiperkaPath: String = "chiperka",
         var dockerMode: String = DOCKER_EXEC,
         var dockerContainer: String = "",
         var dockerImage: String = "",
-        var dockerSparkPath: String = "spark",
+        var dockerChiperkaPath: String = "chiperka",
         var dockerPathMappingHost: String = "",
         var dockerPathMappingContainer: String = "",
         var composeFile: String = "",
         var composeService: String = "",
         var composeProjectName: String = "",
         var composeMode: String = DOCKER_EXEC,
-        var composeSparkPath: String = "spark",
+        var composeChiperkaPath: String = "chiperka",
         var composePathMappingHost: String = "",
         var composePathMappingContainer: String = "",
         var cloudUrl: String = "",
@@ -45,9 +45,9 @@ class SparkSettings : PersistentStateComponent<SparkSettings.State> {
         get() = state.executorType
         set(value) { state.executorType = value }
 
-    var sparkPath: String
-        get() = state.sparkPath
-        set(value) { state.sparkPath = value }
+    var chiperkaPath: String
+        get() = state.chiperkaPath
+        set(value) { state.chiperkaPath = value }
 
     var dockerMode: String
         get() = state.dockerMode
@@ -61,9 +61,9 @@ class SparkSettings : PersistentStateComponent<SparkSettings.State> {
         get() = state.dockerImage
         set(value) { state.dockerImage = value }
 
-    var dockerSparkPath: String
-        get() = state.dockerSparkPath
-        set(value) { state.dockerSparkPath = value }
+    var dockerChiperkaPath: String
+        get() = state.dockerChiperkaPath
+        set(value) { state.dockerChiperkaPath = value }
 
     var composeFile: String
         get() = state.composeFile
@@ -81,9 +81,9 @@ class SparkSettings : PersistentStateComponent<SparkSettings.State> {
         get() = state.composeMode
         set(value) { state.composeMode = value }
 
-    var composeSparkPath: String
-        get() = state.composeSparkPath
-        set(value) { state.composeSparkPath = value }
+    var composeChiperkaPath: String
+        get() = state.composeChiperkaPath
+        set(value) { state.composeChiperkaPath = value }
 
     var dockerPathMappingHost: String
         get() = state.dockerPathMappingHost
@@ -137,7 +137,7 @@ class SparkSettings : PersistentStateComponent<SparkSettings.State> {
         const val DOCKER_EXEC = "exec"
         const val DOCKER_RUN = "run"
 
-        fun getInstance(project: Project): SparkSettings =
-            project.getService(SparkSettings::class.java)
+        fun getInstance(project: Project): ChiperkaSettings =
+            project.getService(ChiperkaSettings::class.java)
     }
 }

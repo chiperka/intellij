@@ -1,1 +1,1 @@
-rootProject.name = "spark-intellij-plugin"
+rootProject.name = "chiperka-intellij-plugin"

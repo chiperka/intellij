@@ -1,17 +1,17 @@
 <idea-plugin>
-    <id>com.sparkrunner.plugin</id>
-    <name>Spark Test Runner</name>
+    <id>com.chiperkarunner.plugin</id>
+    <name>Chiperka Test Runner</name>
     <version>1.0.0</version>
-    <vendor email="info@finie.cz" url="https://spark.finie.io">Finie</vendor>
+    <vendor email="info@finie.cz" url="https://about.chiperka.com">Finie</vendor>
 
     <description><![CDATA[
-        <h2>Spark Test Runner</h2>
+        <h2>Chiperka Test Runner</h2>
         <p>
-            First-class IDE integration for <a href="https://spark.finie.io">Spark</a> &mdash;
+            First-class IDE integration for <a href="https://about.chiperka.com">Chiperka</a> &mdash;
             a declarative, YAML-based API &amp; integration test runner with built-in Docker orchestration.
         </p>
         <p>
-            Define services, HTTP requests, and assertions in <code>.spark</code> files and run them
+            Define services, HTTP requests, and assertions in <code>.chiperka</code> files and run them
             with a single click directly from the editor.
         </p>
 
@@ -19,21 +19,21 @@
         <ul>
             <li><b>Gutter play buttons</b> &mdash; Run individual tests or entire suites with one click</li>
             <li><b>Test Runner integration</b> &mdash; Results displayed in the built-in Test Runner tree with pass/fail status, duration, and diff viewer for assertion failures</li>
-            <li><b>Source navigation</b> &mdash; Click a test in the Test Runner to jump to its definition in the <code>.spark</code> file</li>
+            <li><b>Source navigation</b> &mdash; Click a test in the Test Runner to jump to its definition in the <code>.chiperka</code> file</li>
             <li><b>Run configurations</b> &mdash; Full configuration UI with test file, filter, tags, preset, and additional arguments</li>
             <li><b>Multiple execution modes</b> &mdash; Local, Docker (<code>exec</code>/<code>run</code>), and Docker Compose (<code>exec</code>/<code>run</code>)</li>
-            <li><b>Cloud mode</b> &mdash; Run tests on a remote Spark API server via <code>SPARK_CLOUD_URL</code></li>
-            <li><b>JSON Schema validation</b> &mdash; Autocompletion and validation for <code>.spark</code> test files and <code>spark.yaml</code> config files</li>
+            <li><b>Cloud mode</b> &mdash; Run tests on a remote Chiperka API server via <code>CHIPERKA_CLOUD_URL</code></li>
+            <li><b>JSON Schema validation</b> &mdash; Autocompletion and validation for <code>.chiperka</code> test files and <code>chiperka.yaml</code> config files</li>
             <li><b>Structure view</b> &mdash; Navigate suite &gt; tests &gt; sections (services, setup, execution, assertions)</li>
-            <li><b>Custom file icon</b> &mdash; <code>.spark</code> files are instantly recognizable in the project tree</li>
-            <li><b>New file template</b> &mdash; <i>New &gt; Spark Test</i> creates a <code>.spark</code> file from a template</li>
-            <li><b>Context menu</b> &mdash; Right-click folders or files to run Spark tests</li>
+            <li><b>Custom file icon</b> &mdash; <code>.chiperka</code> files are instantly recognizable in the project tree</li>
+            <li><b>New file template</b> &mdash; <i>New &gt; Chiperka Test</i> creates a <code>.chiperka</code> file from a template</li>
+            <li><b>Context menu</b> &mdash; Right-click folders or files to run Chiperka tests</li>
         </ul>
 
         <h3>Getting started</h3>
         <ol>
-            <li>Install the plugin and open a project that contains <code>.spark</code> test files</li>
-            <li>Configure the Spark executable path in <b>Settings &gt; Tools &gt; Spark Test Runner</b></li>
+            <li>Install the plugin and open a project that contains <code>.chiperka</code> test files</li>
+            <li>Configure the Chiperka executable path in <b>Settings &gt; Tools &gt; Chiperka Test Runner</b></li>
             <li>Click the play button in the gutter next to a test name to run it</li>
         </ol>
 
@@ -47,11 +47,11 @@
             <li>Initial release</li>
             <li>Gutter play buttons for suites and individual tests</li>
             <li>Test Runner integration with pass/fail status, duration, and diff viewer</li>
-            <li>Source navigation from Test Runner to <code>.spark</code> file</li>
+            <li>Source navigation from Test Runner to <code>.chiperka</code> file</li>
             <li>Run configurations with Local, Docker, and Docker Compose execution modes</li>
             <li>Cloud mode support</li>
-            <li>JSON Schema validation and autocompletion for <code>.spark</code> and <code>spark.yaml</code></li>
-            <li>Structure view for <code>.spark</code> files</li>
+            <li>JSON Schema validation and autocompletion for <code>.chiperka</code> and <code>chiperka.yaml</code></li>
+            <li>Structure view for <code>.chiperka</code> files</li>
             <li>Custom file icon and file type override</li>
             <li>New file template and context menu action</li>
         </ul>
@@ -63,54 +63,54 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <projectService
-            serviceImplementation="com.sparkrunner.plugin.settings.SparkSettings"/>
+            serviceImplementation="com.chiperkarunner.plugin.settings.ChiperkaSettings"/>
 
         <projectConfigurable
             parentId="tools"
-            instance="com.sparkrunner.plugin.settings.SparkSettingsConfigurable"
-            id="com.sparkrunner.plugin.settings.SparkSettingsConfigurable"
-            displayName="Spark Test Runner"/>
+            instance="com.chiperkarunner.plugin.settings.ChiperkaSettingsConfigurable"
+            id="com.chiperkarunner.plugin.settings.ChiperkaSettingsConfigurable"
+            displayName="Chiperka Test Runner"/>
 
         <configurationType
-            implementation="com.sparkrunner.plugin.run.SparkRunConfigurationType"/>
+            implementation="com.chiperkarunner.plugin.run.ChiperkaRunConfigurationType"/>
 
         <fileType
-            name="Spark"
-            implementationClass="com.sparkrunner.plugin.SparkFileType"
+            name="Chiperka"
+            implementationClass="com.chiperkarunner.plugin.ChiperkaFileType"
             fieldName="INSTANCE"
             language="yaml"
-            extensions="spark"/>
+            extensions="chiperka"/>
 
         <codeInsight.lineMarkerProvider
             language="yaml"
-            implementationClass="com.sparkrunner.plugin.lineMarker.SparkTestLineMarkerProvider"/>
+            implementationClass="com.chiperkarunner.plugin.lineMarker.ChiperkaTestLineMarkerProvider"/>
 
         <lang.psiStructureViewFactory
             language="yaml"
-            implementationClass="com.sparkrunner.plugin.structure.SparkStructureViewFactory"
+            implementationClass="com.chiperkarunner.plugin.structure.ChiperkaStructureViewFactory"
             order="first"/>
     </extensions>
 
     <extensions defaultExtensionNs="JavaScript">
         <JsonSchema.ProviderFactory
-            implementation="com.sparkrunner.plugin.schema.SparkSchemaProviderFactory"/>
+            implementation="com.chiperkarunner.plugin.schema.ChiperkaSchemaProviderFactory"/>
     </extensions>
 
     <actions>
-        <action id="SparkRunFolderAction"
-                class="com.sparkrunner.plugin.action.SparkRunFolderAction"
-                text="Run Spark Tests"
-                description="Run Spark tests"
-                icon="com.sparkrunner.plugin.SparkIcons.Spark">
+        <action id="ChiperkaRunFolderAction"
+                class="com.chiperkarunner.plugin.action.ChiperkaRunFolderAction"
+                text="Run Chiperka Tests"
+                description="Run Chiperka tests"
+                icon="com.chiperkarunner.plugin.ChiperkaIcons.Chiperka">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
 
-        <action id="CreateSparkTestAction"
-                class="com.sparkrunner.plugin.action.CreateSparkTestAction"
-                text="Spark Test"
-                description="Create a new Spark test file"
-                icon="com.sparkrunner.plugin.SparkIcons.Spark">
+        <action id="CreateChiperkaTestAction"
+                class="com.chiperkarunner.plugin.action.CreateChiperkaTestAction"
+                text="Chiperka Test"
+                description="Create a new Chiperka test file"
+                icon="com.chiperkarunner.plugin.ChiperkaIcons.Chiperka">
             <add-to-group group-id="NewGroup" anchor="last"/>
         </action>
     </actions>

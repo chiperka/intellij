@@ -1,18 +1,18 @@
-package com.sparkrunner.plugin.lineMarker
+package com.chiperkarunner.plugin.lineMarker
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProvider
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiElement
-import com.sparkrunner.plugin.run.SparkRunUtil
+import com.chiperkarunner.plugin.run.ChiperkaRunUtil
 import org.jetbrains.yaml.psi.*
 
-class SparkTestLineMarkerProvider : LineMarkerProvider {
+class ChiperkaTestLineMarkerProvider : LineMarkerProvider {
 
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
         val file = element.containingFile ?: return null
-        if (!file.name.endsWith(".spark")) return null
+        if (!file.name.endsWith(".chiperka")) return null
 
         val yamlFile = file as? YAMLFile ?: return null
         if (isServiceTemplate(yamlFile)) return null
@@ -67,7 +67,7 @@ class SparkTestLineMarkerProvider : LineMarkerProvider {
             element.textRange,
             AllIcons.RunConfigurations.TestState.Run,
             { label },
-            { _, psiElement -> runSpark(psiElement, filePath, null, suiteName.ifBlank { null }) },
+            { _, psiElement -> runChiperka(psiElement, filePath, null, suiteName.ifBlank { null }) },
             GutterIconRenderer.Alignment.CENTER,
             { label }
         )
@@ -79,22 +79,22 @@ class SparkTestLineMarkerProvider : LineMarkerProvider {
             element.textRange,
             AllIcons.RunConfigurations.TestState.Run,
             { "Run '$displayName'" },
-            { _, psiElement -> runSpark(psiElement, filePath, filterName, displayName) },
+            { _, psiElement -> runChiperka(psiElement, filePath, filterName, displayName) },
             GutterIconRenderer.Alignment.CENTER,
             { "Run '$displayName'" }
         )
     }
 
-    private fun runSpark(element: PsiElement, filePath: String, filterName: String?, displayName: String?) {
+    private fun runChiperka(element: PsiElement, filePath: String, filterName: String?, displayName: String?) {
         val project = element.project
 
         val configName = if (displayName != null && displayName.isNotBlank()) {
-            "Spark: $displayName"
+            "Chiperka: $displayName"
         } else {
-            "Spark: ${filePath.substringAfterLast('/')}"
+            "Chiperka: ${filePath.substringAfterLast('/')}"
         }
 
-        val settings = SparkRunUtil.findOrCreateConfig(project, filePath, filterName, configName)
-        SparkRunUtil.showDialogAndRun(project, settings)
+        val settings = ChiperkaRunUtil.findOrCreateConfig(project, filePath, filterName, configName)
+        ChiperkaRunUtil.showDialogAndRun(project, settings)
     }
 }

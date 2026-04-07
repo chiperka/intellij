@@ -1,4 +1,4 @@
-package com.sparkrunner.plugin.settings
+package com.chiperkarunner.plugin.settings
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.Configurable
@@ -11,19 +11,19 @@ import java.awt.FlowLayout
 import java.awt.event.ItemEvent
 import javax.swing.*
 
-class SparkSettingsConfigurable(private val project: Project) : Configurable {
+class ChiperkaSettingsConfigurable(private val project: Project) : Configurable {
 
     private var executorTypeCombo: JComboBox<String>? = null
     private var executorCards: JPanel? = null
 
     // Local
-    private var sparkPathField: TextFieldWithBrowseButton? = null
+    private var chiperkaPathField: TextFieldWithBrowseButton? = null
 
     // Docker
     private var dockerModeCombo: JComboBox<String>? = null
     private var dockerContainerField: JTextField? = null
     private var dockerImageField: JTextField? = null
-    private var dockerSparkPathField: JTextField? = null
+    private var dockerChiperkaPathField: JTextField? = null
     private var dockerModeCards: JPanel? = null
     private var dockerPathMappingHostField: JTextField? = null
     private var dockerPathMappingContainerField: JTextField? = null
@@ -33,7 +33,7 @@ class SparkSettingsConfigurable(private val project: Project) : Configurable {
     private var composeServiceField: JTextField? = null
     private var composeProjectNameField: JTextField? = null
     private var composeModeCombo: JComboBox<String>? = null
-    private var composeSparkPathField: JTextField? = null
+    private var composeChiperkaPathField: JTextField? = null
     private var composePathMappingHostField: JTextField? = null
     private var composePathMappingContainerField: JTextField? = null
 
@@ -43,29 +43,29 @@ class SparkSettingsConfigurable(private val project: Project) : Configurable {
     private var testResultLabel: JLabel? = null
     private var panel: JPanel? = null
 
-    override fun getDisplayName(): String = "Spark Test Runner"
+    override fun getDisplayName(): String = "Chiperka Test Runner"
 
     override fun createComponent(): JComponent {
         executorTypeCombo = JComboBox(arrayOf("Local", "Docker", "Docker Compose"))
 
         // Local panel
-        sparkPathField = TextFieldWithBrowseButton().apply {
+        chiperkaPathField = TextFieldWithBrowseButton().apply {
             addBrowseFolderListener(
-                "Select Spark Executable",
-                "Path to the spark binary",
+                "Select Chiperka Executable",
+                "Path to the chiperka binary",
                 null,
                 FileChooserDescriptorFactory.createSingleFileDescriptor()
             )
         }
         val localPanel = FormBuilder.createFormBuilder()
-            .addLabeledComponent("Spark executable:", sparkPathField!!)
+            .addLabeledComponent("Chiperka executable:", chiperkaPathField!!)
             .panel
 
         // Docker panel
         dockerModeCombo = JComboBox(arrayOf("exec", "run"))
         dockerContainerField = JTextField()
         dockerImageField = JTextField()
-        dockerSparkPathField = JTextField()
+        dockerChiperkaPathField = JTextField()
 
         val dockerModeCardLayout = CardLayout()
         dockerModeCards = JPanel(dockerModeCardLayout)
@@ -90,7 +90,7 @@ class SparkSettingsConfigurable(private val project: Project) : Configurable {
         val dockerPanel = FormBuilder.createFormBuilder()
             .addLabeledComponent("Mode:", dockerModeCombo!!)
             .addComponent(dockerModeCards!!)
-            .addLabeledComponent("Spark path in container:", dockerSparkPathField!!)
+            .addLabeledComponent("Chiperka path in container:", dockerChiperkaPathField!!)
             .addSeparator()
             .addLabeledComponent("Path mapping - host path:", dockerPathMappingHostField!!)
             .addLabeledComponent("Path mapping - container path:", dockerPathMappingContainerField!!)
@@ -108,7 +108,7 @@ class SparkSettingsConfigurable(private val project: Project) : Configurable {
         composeServiceField = JTextField()
         composeProjectNameField = JTextField()
         composeModeCombo = JComboBox(arrayOf("exec", "run"))
-        composeSparkPathField = JTextField()
+        composeChiperkaPathField = JTextField()
         composePathMappingHostField = JTextField()
         composePathMappingContainerField = JTextField()
         val composePanel = FormBuilder.createFormBuilder()
@@ -116,7 +116,7 @@ class SparkSettingsConfigurable(private val project: Project) : Configurable {
             .addLabeledComponent("Service name:", composeServiceField!!)
             .addLabeledComponent("Project name:", composeProjectNameField!!)
             .addLabeledComponent("Mode:", composeModeCombo!!)
-            .addLabeledComponent("Spark path in container:", composeSparkPathField!!)
+            .addLabeledComponent("Chiperka path in container:", composeChiperkaPathField!!)
             .addSeparator()
             .addLabeledComponent("Path mapping - host path:", composePathMappingHostField!!)
             .addLabeledComponent("Path mapping - container path:", composePathMappingContainerField!!)
@@ -140,7 +140,7 @@ class SparkSettingsConfigurable(private val project: Project) : Configurable {
         configurationFileField = TextFieldWithBrowseButton().apply {
             addBrowseFolderListener(
                 "Select Configuration File",
-                "Path to spark.yaml configuration file",
+                "Path to chiperka.yaml configuration file",
                 null,
                 FileChooserDescriptorFactory.createSingleFileDescriptor()
             )
@@ -203,23 +203,23 @@ class SparkSettingsConfigurable(private val project: Project) : Configurable {
 
     private fun buildTestCommand(): List<String> {
         return when (getSelectedExecutorType()) {
-            SparkSettings.EXECUTOR_DOCKER -> {
-                val sparkPath = dockerSparkPathField?.text?.ifBlank { "spark" } ?: "spark"
-                val mode = if (dockerModeCombo?.selectedIndex == 1) SparkSettings.DOCKER_RUN else SparkSettings.DOCKER_EXEC
-                if (mode == SparkSettings.DOCKER_RUN) {
+            ChiperkaSettings.EXECUTOR_DOCKER -> {
+                val chiperkaPath = dockerChiperkaPathField?.text?.ifBlank { "chiperka" } ?: "chiperka"
+                val mode = if (dockerModeCombo?.selectedIndex == 1) ChiperkaSettings.DOCKER_RUN else ChiperkaSettings.DOCKER_EXEC
+                if (mode == ChiperkaSettings.DOCKER_RUN) {
                     val image = dockerImageField?.text ?: ""
-                    listOf("docker", "run", "--rm", image, sparkPath, "--version")
+                    listOf("docker", "run", "--rm", image, chiperkaPath, "--version")
                 } else {
                     val container = dockerContainerField?.text ?: ""
-                    listOf("docker", "exec", container, sparkPath, "--version")
+                    listOf("docker", "exec", container, chiperkaPath, "--version")
                 }
             }
-            SparkSettings.EXECUTOR_DOCKER_COMPOSE -> {
-                val sparkPath = composeSparkPathField?.text?.ifBlank { "spark" } ?: "spark"
+            ChiperkaSettings.EXECUTOR_DOCKER_COMPOSE -> {
+                val chiperkaPath = composeChiperkaPathField?.text?.ifBlank { "chiperka" } ?: "chiperka"
                 val composeFile = composeFileField?.text ?: ""
                 val service = composeServiceField?.text ?: ""
                 val projectName = composeProjectNameField?.text ?: ""
-                val mode = if (composeModeCombo?.selectedIndex == 1) SparkSettings.DOCKER_RUN else SparkSettings.DOCKER_EXEC
+                val mode = if (composeModeCombo?.selectedIndex == 1) ChiperkaSettings.DOCKER_RUN else ChiperkaSettings.DOCKER_EXEC
                 val args = mutableListOf("docker", "compose")
                 if (composeFile.isNotBlank()) {
                     args.addAll(listOf("-f", composeFile))
@@ -228,36 +228,36 @@ class SparkSettingsConfigurable(private val project: Project) : Configurable {
                     args.addAll(listOf("-p", projectName))
                 }
                 args.add(mode)
-                if (mode == SparkSettings.DOCKER_RUN) {
+                if (mode == ChiperkaSettings.DOCKER_RUN) {
                     args.add("--rm")
                 }
                 args.add(service)
-                args.add(sparkPath)
+                args.add(chiperkaPath)
                 args.add("--version")
                 args
             }
             else -> {
-                val sparkPath = sparkPathField?.text?.ifBlank { "spark" } ?: "spark"
-                listOf(sparkPath, "--version")
+                val chiperkaPath = chiperkaPathField?.text?.ifBlank { "chiperka" } ?: "chiperka"
+                listOf(chiperkaPath, "--version")
             }
         }
     }
 
     override fun isModified(): Boolean {
-        val s = SparkSettings.getInstance(project)
+        val s = ChiperkaSettings.getInstance(project)
         return getSelectedExecutorType() != s.executorType
-            || sparkPathField?.text != s.sparkPath
+            || chiperkaPathField?.text != s.chiperkaPath
             || getSelectedDockerMode() != s.dockerMode
             || dockerContainerField?.text != s.dockerContainer
             || dockerImageField?.text != s.dockerImage
-            || dockerSparkPathField?.text != s.dockerSparkPath
+            || dockerChiperkaPathField?.text != s.dockerChiperkaPath
             || dockerPathMappingHostField?.text != s.dockerPathMappingHost
             || dockerPathMappingContainerField?.text != s.dockerPathMappingContainer
             || composeFileField?.text != s.composeFile
             || composeServiceField?.text != s.composeService
             || composeProjectNameField?.text != s.composeProjectName
             || getSelectedComposeMode() != s.composeMode
-            || composeSparkPathField?.text != s.composeSparkPath
+            || composeChiperkaPathField?.text != s.composeChiperkaPath
             || composePathMappingHostField?.text != s.composePathMappingHost
             || composePathMappingContainerField?.text != s.composePathMappingContainer
             || cloudUrlField?.text != s.cloudUrl
@@ -265,20 +265,20 @@ class SparkSettingsConfigurable(private val project: Project) : Configurable {
     }
 
     override fun apply() {
-        val s = SparkSettings.getInstance(project)
+        val s = ChiperkaSettings.getInstance(project)
         s.executorType = getSelectedExecutorType()
-        s.sparkPath = sparkPathField?.text ?: "spark"
+        s.chiperkaPath = chiperkaPathField?.text ?: "chiperka"
         s.dockerMode = getSelectedDockerMode()
         s.dockerContainer = dockerContainerField?.text ?: ""
         s.dockerImage = dockerImageField?.text ?: ""
-        s.dockerSparkPath = dockerSparkPathField?.text ?: "spark"
+        s.dockerChiperkaPath = dockerChiperkaPathField?.text ?: "chiperka"
         s.dockerPathMappingHost = dockerPathMappingHostField?.text ?: ""
         s.dockerPathMappingContainer = dockerPathMappingContainerField?.text ?: ""
         s.composeFile = composeFileField?.text ?: ""
         s.composeService = composeServiceField?.text ?: ""
         s.composeProjectName = composeProjectNameField?.text ?: ""
         s.composeMode = getSelectedComposeMode()
-        s.composeSparkPath = composeSparkPathField?.text ?: "spark"
+        s.composeChiperkaPath = composeChiperkaPathField?.text ?: "chiperka"
         s.composePathMappingHost = composePathMappingHostField?.text ?: ""
         s.composePathMappingContainer = composePathMappingContainerField?.text ?: ""
         s.cloudUrl = cloudUrlField?.text ?: ""
@@ -286,25 +286,25 @@ class SparkSettingsConfigurable(private val project: Project) : Configurable {
     }
 
     override fun reset() {
-        val s = SparkSettings.getInstance(project)
+        val s = ChiperkaSettings.getInstance(project)
         executorTypeCombo?.selectedIndex = when (s.executorType) {
-            SparkSettings.EXECUTOR_DOCKER -> 1
-            SparkSettings.EXECUTOR_DOCKER_COMPOSE -> 2
+            ChiperkaSettings.EXECUTOR_DOCKER -> 1
+            ChiperkaSettings.EXECUTOR_DOCKER_COMPOSE -> 2
             else -> 0
         }
-        sparkPathField?.text = s.sparkPath
-        dockerModeCombo?.selectedIndex = if (s.dockerMode == SparkSettings.DOCKER_RUN) 1 else 0
+        chiperkaPathField?.text = s.chiperkaPath
+        dockerModeCombo?.selectedIndex = if (s.dockerMode == ChiperkaSettings.DOCKER_RUN) 1 else 0
         dockerContainerField?.text = s.dockerContainer
         dockerImageField?.text = s.dockerImage
-        dockerSparkPathField?.text = s.dockerSparkPath
+        dockerChiperkaPathField?.text = s.dockerChiperkaPath
         val projectBasePath = project.basePath ?: ""
         dockerPathMappingHostField?.text = s.dockerPathMappingHost.ifBlank { projectBasePath }
         dockerPathMappingContainerField?.text = s.dockerPathMappingContainer.ifBlank { "/code" }
         composeFileField?.text = s.composeFile
         composeServiceField?.text = s.composeService
         composeProjectNameField?.text = s.composeProjectName
-        composeModeCombo?.selectedIndex = if (s.composeMode == SparkSettings.DOCKER_RUN) 1 else 0
-        composeSparkPathField?.text = s.composeSparkPath
+        composeModeCombo?.selectedIndex = if (s.composeMode == ChiperkaSettings.DOCKER_RUN) 1 else 0
+        composeChiperkaPathField?.text = s.composeChiperkaPath
         composePathMappingHostField?.text = s.composePathMappingHost.ifBlank { projectBasePath }
         composePathMappingContainerField?.text = s.composePathMappingContainer.ifBlank { "/code" }
         cloudUrlField?.text = s.cloudUrl
@@ -322,11 +322,11 @@ class SparkSettingsConfigurable(private val project: Project) : Configurable {
     override fun disposeUIResources() {
         executorTypeCombo = null
         executorCards = null
-        sparkPathField = null
+        chiperkaPathField = null
         dockerModeCombo = null
         dockerContainerField = null
         dockerImageField = null
-        dockerSparkPathField = null
+        dockerChiperkaPathField = null
         dockerModeCards = null
         dockerPathMappingHostField = null
         dockerPathMappingContainerField = null
@@ -334,7 +334,7 @@ class SparkSettingsConfigurable(private val project: Project) : Configurable {
         composeServiceField = null
         composeProjectNameField = null
         composeModeCombo = null
-        composeSparkPathField = null
+        composeChiperkaPathField = null
         composePathMappingHostField = null
         composePathMappingContainerField = null
         cloudUrlField = null
@@ -344,14 +344,14 @@ class SparkSettingsConfigurable(private val project: Project) : Configurable {
     }
 
     private fun getSelectedExecutorType(): String = when (executorTypeCombo?.selectedIndex) {
-        1 -> SparkSettings.EXECUTOR_DOCKER
-        2 -> SparkSettings.EXECUTOR_DOCKER_COMPOSE
-        else -> SparkSettings.EXECUTOR_LOCAL
+        1 -> ChiperkaSettings.EXECUTOR_DOCKER
+        2 -> ChiperkaSettings.EXECUTOR_DOCKER_COMPOSE
+        else -> ChiperkaSettings.EXECUTOR_LOCAL
     }
 
     private fun getSelectedDockerMode(): String =
-        if (dockerModeCombo?.selectedIndex == 1) SparkSettings.DOCKER_RUN else SparkSettings.DOCKER_EXEC
+        if (dockerModeCombo?.selectedIndex == 1) ChiperkaSettings.DOCKER_RUN else ChiperkaSettings.DOCKER_EXEC
 
     private fun getSelectedComposeMode(): String =
-        if (composeModeCombo?.selectedIndex == 1) SparkSettings.DOCKER_RUN else SparkSettings.DOCKER_EXEC
+        if (composeModeCombo?.selectedIndex == 1) ChiperkaSettings.DOCKER_RUN else ChiperkaSettings.DOCKER_EXEC
 }

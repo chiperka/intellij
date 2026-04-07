@@ -1,4 +1,4 @@
-package com.sparkrunner.plugin.run
+package com.chiperkarunner.plugin.run
 
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.ConfigurationType
@@ -6,13 +6,13 @@ import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.openapi.components.BaseState
 import com.intellij.openapi.project.Project
 
-class SparkRunConfigurationFactory(type: ConfigurationType) : ConfigurationFactory(type) {
+class ChiperkaRunConfigurationFactory(type: ConfigurationType) : ConfigurationFactory(type) {
 
-    override fun getId(): String = SparkRunConfigurationType.ID
+    override fun getId(): String = ChiperkaRunConfigurationType.ID
 
     override fun createTemplateConfiguration(project: Project): RunConfiguration =
-        SparkRunConfiguration(project, this, "Spark Test")
+        ChiperkaRunConfiguration(project, this, "Chiperka Test")
 
     override fun getOptionsClass(): Class<out BaseState> =
-        SparkRunConfigurationOptions::class.java
+        ChiperkaRunConfigurationOptions::class.java
 }

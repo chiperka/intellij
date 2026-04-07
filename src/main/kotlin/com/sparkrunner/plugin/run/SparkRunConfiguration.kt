@@ -1,4 +1,4 @@
-package com.sparkrunner.plugin.run
+package com.chiperkarunner.plugin.run
 
 import com.intellij.execution.Executor
 import com.intellij.execution.configurations.ConfigurationFactory
@@ -8,14 +8,14 @@ import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 
-class SparkRunConfiguration(
+class ChiperkaRunConfiguration(
     project: Project,
     factory: ConfigurationFactory,
     name: String
-) : RunConfigurationBase<SparkRunConfigurationOptions>(project, factory, name) {
+) : RunConfigurationBase<ChiperkaRunConfigurationOptions>(project, factory, name) {
 
-    override fun getOptions(): SparkRunConfigurationOptions =
-        super.getOptions() as SparkRunConfigurationOptions
+    override fun getOptions(): ChiperkaRunConfigurationOptions =
+        super.getOptions() as ChiperkaRunConfigurationOptions
 
     var testFilePath: String
         get() = options.testFilePath
@@ -45,9 +45,9 @@ class SparkRunConfiguration(
         get() = options.cloudMode
         set(value) { options.cloudMode = value }
 
-    override fun getConfigurationEditor(): SettingsEditor<SparkRunConfiguration> =
-        SparkRunConfigurationEditor()
+    override fun getConfigurationEditor(): SettingsEditor<ChiperkaRunConfiguration> =
+        ChiperkaRunConfigurationEditor()
 
     override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState =
-        SparkCommandLineState(this, environment)
+        ChiperkaCommandLineState(this, environment)
 }

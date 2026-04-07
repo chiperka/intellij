@@ -1,17 +1,17 @@
-package com.sparkrunner.plugin
+package com.chiperkarunner.plugin
 
 import com.intellij.openapi.fileTypes.LanguageFileType
 import org.jetbrains.yaml.YAMLLanguage
 import javax.swing.Icon
 
-class SparkFileType private constructor() : LanguageFileType(YAMLLanguage.INSTANCE) {
+class ChiperkaFileType private constructor() : LanguageFileType(YAMLLanguage.INSTANCE) {
     companion object {
         @JvmField
-        val INSTANCE = SparkFileType()
+        val INSTANCE = ChiperkaFileType()
     }
 
-    override fun getName(): String = "Spark"
-    override fun getDescription(): String = "Spark test file"
-    override fun getDefaultExtension(): String = "spark"
-    override fun getIcon(): Icon = SparkIcons.Spark
+    override fun getName(): String = "Chiperka"
+    override fun getDescription(): String = "Chiperka test file"
+    override fun getDefaultExtension(): String = "chiperka"
+    override fun getIcon(): Icon = ChiperkaIcons.Chiperka
 }

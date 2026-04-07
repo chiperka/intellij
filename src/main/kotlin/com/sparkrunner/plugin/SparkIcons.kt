@@ -1,9 +1,9 @@
-package com.sparkrunner.plugin
+package com.chiperkarunner.plugin
 
 import com.intellij.openapi.util.IconLoader
 import javax.swing.Icon
 
-object SparkIcons {
+object ChiperkaIcons {
     @JvmField
-    val Spark: Icon = IconLoader.getIcon("/icons/spark.svg", SparkIcons::class.java)
+    val Chiperka: Icon = IconLoader.getIcon("/icons/chiperka.svg", ChiperkaIcons::class.java)
 }

@@ -1,4 +1,4 @@
-package com.sparkrunner.plugin.run
+package com.chiperkarunner.plugin.run
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
@@ -6,13 +6,13 @@ import com.intellij.util.ui.FormBuilder
 import javax.swing.JCheckBox
 import javax.swing.JComponent
 
-class SparkRunOptionsDialog(project: Project) : DialogWrapper(project) {
+class ChiperkaRunOptionsDialog(project: Project) : DialogWrapper(project) {
 
     private val cloudModeCheckBox = JCheckBox("Cloud mode")
     private val regenerateSnapshotsCheckBox = JCheckBox("Regenerate snapshots")
 
     init {
-        title = "Run Spark Tests"
+        title = "Run Chiperka Tests"
         setOKButtonText("Run")
 
         cloudModeCheckBox.isSelected = false
@@ -30,7 +30,7 @@ class SparkRunOptionsDialog(project: Project) : DialogWrapper(project) {
             .panel
     }
 
-    fun applyToConfig(config: SparkRunConfiguration) {
+    fun applyToConfig(config: ChiperkaRunConfiguration) {
         config.cloudMode = cloudModeCheckBox.isSelected
         config.regenerateSnapshots = regenerateSnapshotsCheckBox.isSelected
     }

@@ -4,7 +4,7 @@ plugins {
     id("org.jetbrains.intellij.platform") version "2.2.1"
 }
 
-group = "com.sparkrunner.plugin"
+group = "com.chiperkarunner.plugin"
 version = "1.0.0"
 
 repositories {
@@ -28,13 +28,13 @@ kotlin {
 
 intellijPlatform {
     pluginConfiguration {
-        id = "com.sparkrunner.plugin"
-        name = "Spark Test Runner"
+        id = "com.chiperkarunner.plugin"
+        name = "Chiperka Test Runner"
         version = "1.0.0"
         vendor {
             name = "Finie"
             email = "info@finie.cz"
-            url = "https://spark.finie.io"
+            url = "https://about.chiperka.com"
         }
         ideaVersion {
             sinceBuild = "251"
