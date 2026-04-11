@@ -23,7 +23,7 @@
             <li><b>Run configurations</b> &mdash; Full configuration UI with test file, filter, tags, preset, and additional arguments</li>
             <li><b>Multiple execution modes</b> &mdash; Local, Docker (<code>exec</code>/<code>run</code>), and Docker Compose (<code>exec</code>/<code>run</code>)</li>
             <li><b>Cloud mode</b> &mdash; Run tests on a remote Chiperka API server via <code>CHIPERKA_CLOUD_URL</code></li>
-            <li><b>JSON Schema validation</b> &mdash; Autocompletion and validation for <code>.chiperka</code> test files and <code>chiperka.yaml</code> config files</li>
+            <li><b>JSON Schema validation</b> &mdash; Autocompletion and validation for <code>.chiperka</code> test files and <code>.chiperka/chiperka.yaml</code> config files</li>
             <li><b>Structure view</b> &mdash; Navigate suite &gt; tests &gt; sections (services, setup, execution, assertions)</li>
             <li><b>Custom file icon</b> &mdash; <code>.chiperka</code> files are instantly recognizable in the project tree</li>
             <li><b>New file template</b> &mdash; <i>New &gt; Chiperka Test</i> creates a <code>.chiperka</code> file from a template</li>
@@ -50,7 +50,7 @@
             <li>Source navigation from Test Runner to <code>.chiperka</code> file</li>
             <li>Run configurations with Local, Docker, and Docker Compose execution modes</li>
             <li>Cloud mode support</li>
-            <li>JSON Schema validation and autocompletion for <code>.chiperka</code> and <code>chiperka.yaml</code></li>
+            <li>JSON Schema validation and autocompletion for <code>.chiperka</code> and <code>.chiperka/chiperka.yaml</code></li>
             <li>Structure view for <code>.chiperka</code> files</li>
             <li>Custom file icon and file type override</li>
             <li>New file template and context menu action</li>

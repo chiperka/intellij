@@ -140,7 +140,7 @@ class ChiperkaSettingsConfigurable(private val project: Project) : Configurable 
         configurationFileField = TextFieldWithBrowseButton().apply {
             addBrowseFolderListener(
                 "Select Configuration File",
-                "Path to chiperka.yaml configuration file",
+                "Path to .chiperka/chiperka.yaml configuration file",
                 null,
                 FileChooserDescriptorFactory.createSingleFileDescriptor()
             )
