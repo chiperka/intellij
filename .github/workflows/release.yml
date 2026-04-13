@@ -22,6 +22,9 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
+      - name: Generate Gradle wrapper
+        run: gradle wrapper --gradle-version 8.11.1
+
       - name: Set version from tag
         run: echo "PLUGIN_VERSION=$GITHUB_REF_NAME" >> $GITHUB_ENV
 
