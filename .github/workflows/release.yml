@@ -1,0 +1,54 @@
+name: Release Plugin
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Set version from tag
+        run: echo "PLUGIN_VERSION=$GITHUB_REF_NAME" >> $GITHUB_ENV
+
+      - name: Generate release notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api repos/${{ github.repository }}/releases/generate-notes \
+            -f tag_name="$GITHUB_REF_NAME" \
+            --jq '.body' > release-notes.md
+          echo "PLUGIN_CHANGE_NOTES<<EOF" >> $GITHUB_ENV
+          cat release-notes.md >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Build plugin
+        run: ./gradlew buildPlugin
+
+      - name: Verify plugin
+        run: ./gradlew verifyPlugin
+
+      - name: Publish to JetBrains Marketplace
+        env:
+          JETBRAINS_MARKETPLACE_TOKEN: ${{ secrets.JETBRAINS_MARKETPLACE_TOKEN }}
+        run: ./gradlew publishPlugin
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --title "v${PLUGIN_VERSION}" \
+            --notes-file release-notes.md \
+            build/distributions/*.zip

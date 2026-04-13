@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.chiperkarunner.plugin"
-version = "1.1.0"
+version = System.getenv("PLUGIN_VERSION") ?: error("PLUGIN_VERSION environment variable is required")
 
 repositories {
     mavenCentral()
@@ -30,7 +30,7 @@ intellijPlatform {
     pluginConfiguration {
         id = "com.sparkrunner.plugin"
         name = "Chiperka Test Runner"
-        version = "1.1.0"
+        version = System.getenv("PLUGIN_VERSION") ?: error("PLUGIN_VERSION environment variable is required")
         vendor {
             name = "Finie"
             email = "info@finie.cz"
@@ -40,6 +40,10 @@ intellijPlatform {
             sinceBuild = "251"
             untilBuild = provider { null }
         }
+        changeNotes = providers.environmentVariable("PLUGIN_CHANGE_NOTES").orElse("")
+    }
+    publishing {
+        token = providers.environmentVariable("JETBRAINS_MARKETPLACE_TOKEN")
     }
 }
 

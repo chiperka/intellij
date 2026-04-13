@@ -51,10 +51,10 @@ class ChiperkaSettingsConfigurable(private val project: Project) : Configurable 
         // Local panel
         chiperkaPathField = TextFieldWithBrowseButton().apply {
             addBrowseFolderListener(
-                "Select Chiperka Executable",
-                "Path to the chiperka binary",
-                null,
-                FileChooserDescriptorFactory.createSingleFileDescriptor()
+                project,
+                FileChooserDescriptorFactory.singleFile()
+                    .withTitle("Select Chiperka Executable")
+                    .withDescription("Path to the chiperka binary")
             )
         }
         val localPanel = FormBuilder.createFormBuilder()
@@ -99,10 +99,10 @@ class ChiperkaSettingsConfigurable(private val project: Project) : Configurable 
         // Docker Compose panel
         composeFileField = TextFieldWithBrowseButton().apply {
             addBrowseFolderListener(
-                "Select Docker Compose File",
-                "Path to docker-compose.yml",
-                null,
-                FileChooserDescriptorFactory.createSingleFileDescriptor()
+                project,
+                FileChooserDescriptorFactory.singleFile()
+                    .withTitle("Select Docker Compose File")
+                    .withDescription("Path to docker-compose.yml")
             )
         }
         composeServiceField = JTextField()
@@ -138,10 +138,10 @@ class ChiperkaSettingsConfigurable(private val project: Project) : Configurable 
         // Common fields
         configurationFileField = TextFieldWithBrowseButton().apply {
             addBrowseFolderListener(
-                "Select Configuration File",
-                "Path to .chiperka/chiperka.yaml configuration file",
-                null,
-                FileChooserDescriptorFactory.createSingleFileDescriptor()
+                project,
+                FileChooserDescriptorFactory.singleFile()
+                    .withTitle("Select Configuration File")
+                    .withDescription("Path to .chiperka/chiperka.yaml configuration file")
             )
         }
 
