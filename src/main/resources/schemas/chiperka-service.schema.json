@@ -1,0 +1,178 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Chiperka Service Template",
+  "description": "Schema for Chiperka service template files (*.chiperka with kind: service)",
+  "type": "object",
+  "required": ["kind", "name"],
+  "additionalProperties": false,
+  "properties": {
+    "kind": {
+      "type": "string",
+      "description": "File kind discriminator",
+      "const": "service"
+    },
+    "name": {
+      "type": "string",
+      "description": "Unique service template name (used as ref value in tests)"
+    },
+    "image": {
+      "type": "string",
+      "description": "Docker image (e.g. postgres:15-alpine)"
+    },
+    "command": {
+      "description": "Override image CMD",
+      "oneOf": [
+        { "type": "string" },
+        { "type": "array", "items": { "type": "string" } }
+      ]
+    },
+    "workingDir": {
+      "type": "string",
+      "description": "Working directory inside the container"
+    },
+    "environment": {
+      "type": "object",
+      "description": "Environment variables",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "healthcheck": {
+      "description": "Health check configuration. Use true for the image's built-in HEALTHCHECK.",
+      "oneOf": [
+        { "type": "boolean", "const": true },
+        { "$ref": "#/definitions/HealthCheck" }
+      ]
+    },
+    "artifacts": {
+      "type": "array",
+      "description": "External artifacts to collect from the container after test execution",
+      "items": {
+        "$ref": "#/definitions/ServiceArtifact"
+      }
+    },
+    "maxInstances": {
+      "type": "integer",
+      "description": "Limit concurrent running instances of this service (0 = unlimited)",
+      "default": 0
+    },
+    "hooks": {
+      "type": "array",
+      "description": "Lifecycle hooks executed at specific points during test execution",
+      "items": {
+        "$ref": "#/definitions/Hook"
+      }
+    }
+  },
+  "definitions": {
+    "ServiceArtifact": {
+      "type": "object",
+      "required": ["path"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Artifact name (defaults to filename or directory name from path)"
+        },
+        "path": {
+          "type": "string",
+          "description": "Path inside the container (file or directory)"
+        }
+      }
+    },
+    "HealthCheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "test": {
+          "description": "Healthcheck command. String or Docker Compose-style array (e.g. [\"CMD-SHELL\", \"curl -f http://localhost/\"])",
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ]
+        },
+        "interval": {
+          "type": "string",
+          "description": "Health check interval (default: 1s)",
+          "default": "1s"
+        },
+        "timeout": {
+          "type": "string",
+          "description": "Health check timeout (default: 3s)",
+          "default": "3s"
+        },
+        "retries": {
+          "type": "integer",
+          "description": "Number of retries before unhealthy (default: 30)",
+          "default": 30
+        },
+        "startPeriod": {
+          "type": "string",
+          "description": "Start period before health checks count (default: 0s)",
+          "default": "0s"
+        },
+        "startInterval": {
+          "type": "string",
+          "description": "Interval between health checks during start period"
+        }
+      }
+    },
+    "Hook": {
+      "type": "object",
+      "required": ["slot"],
+      "additionalProperties": false,
+      "properties": {
+        "slot": {
+          "type": "string",
+          "description": "When to run: beforeExecution (after setup) or afterExecution (after teardown + artifacts)",
+          "enum": ["beforeExecution", "afterExecution"]
+        },
+        "priority": {
+          "type": "integer",
+          "description": "Execution order (lower = earlier, default: 50)",
+          "default": 50
+        },
+        "cli": {
+          "$ref": "#/definitions/HookCLI"
+        },
+        "diff": {
+          "$ref": "#/definitions/HookDiff"
+        }
+      }
+    },
+    "HookCLI": {
+      "type": "object",
+      "required": ["command"],
+      "additionalProperties": false,
+      "properties": {
+        "command": {
+          "type": "string",
+          "description": "Shell command to execute inside the service container"
+        },
+        "workingDir": {
+          "type": "string",
+          "description": "Working directory for command execution"
+        }
+      }
+    },
+    "HookDiff": {
+      "type": "object",
+      "required": ["source", "target", "output"],
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "Name of the source artifact to diff"
+        },
+        "target": {
+          "type": "string",
+          "description": "Name of the target artifact to diff"
+        },
+        "output": {
+          "type": "string",
+          "description": "Name for the resulting diff artifact"
+        }
+      }
+    }
+  }
+}

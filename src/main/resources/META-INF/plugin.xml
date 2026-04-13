@@ -1,11 +1,11 @@
 <idea-plugin>
-    <id>com.chiperkarunner.plugin</id>
-    <name>Chiperka Test Runner</name>
-    <version>1.0.0</version>
+    <id>com.sparkrunner.plugin</id>
+    <name>Chiperka</name>
+    <version>1.1.0</version>
     <vendor email="info@finie.cz" url="https://about.chiperka.com">Finie</vendor>
 
     <description><![CDATA[
-        <h2>Chiperka Test Runner</h2>
+        <h2>Chiperka</h2>
         <p>
             First-class IDE integration for <a href="https://about.chiperka.com">Chiperka</a> &mdash;
             a declarative, YAML-based API &amp; integration test runner with built-in Docker orchestration.
@@ -22,18 +22,18 @@
             <li><b>Source navigation</b> &mdash; Click a test in the Test Runner to jump to its definition in the <code>.chiperka</code> file</li>
             <li><b>Run configurations</b> &mdash; Full configuration UI with test file, filter, tags, preset, and additional arguments</li>
             <li><b>Multiple execution modes</b> &mdash; Local, Docker (<code>exec</code>/<code>run</code>), and Docker Compose (<code>exec</code>/<code>run</code>)</li>
-            <li><b>Cloud mode</b> &mdash; Run tests on a remote Chiperka API server via <code>CHIPERKA_CLOUD_URL</code></li>
+            <li><b>Cloud mode</b> &mdash; Run tests on a remote Chiperka cloud server (configured via <code>chiperka.yaml</code>)</li>
             <li><b>JSON Schema validation</b> &mdash; Autocompletion and validation for <code>.chiperka</code> test files and <code>.chiperka/chiperka.yaml</code> config files</li>
             <li><b>Structure view</b> &mdash; Navigate suite &gt; tests &gt; sections (services, setup, execution, assertions)</li>
             <li><b>Custom file icon</b> &mdash; <code>.chiperka</code> files are instantly recognizable in the project tree</li>
-            <li><b>New file template</b> &mdash; <i>New &gt; Chiperka Test</i> creates a <code>.chiperka</code> file from a template</li>
+            <li><b>New file template</b> &mdash; <i>New &gt; Chiperka Specification</i> creates a test or service <code>.chiperka</code> file from a template</li>
             <li><b>Context menu</b> &mdash; Right-click folders or files to run Chiperka tests</li>
         </ul>
 
         <h3>Getting started</h3>
         <ol>
             <li>Install the plugin and open a project that contains <code>.chiperka</code> test files</li>
-            <li>Configure the Chiperka executable path in <b>Settings &gt; Tools &gt; Chiperka Test Runner</b></li>
+            <li>Configure the Chiperka executable path in <b>Settings &gt; Tools &gt; Chiperka</b></li>
             <li>Click the play button in the gutter next to a test name to run it</li>
         </ol>
 
@@ -63,54 +63,54 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <projectService
-            serviceImplementation="com.chiperkarunner.plugin.settings.ChiperkaSettings"/>
+            serviceImplementation="com.chiperka.plugin.settings.ChiperkaSettings"/>
 
         <projectConfigurable
             parentId="tools"
-            instance="com.chiperkarunner.plugin.settings.ChiperkaSettingsConfigurable"
-            id="com.chiperkarunner.plugin.settings.ChiperkaSettingsConfigurable"
-            displayName="Chiperka Test Runner"/>
+            instance="com.chiperka.plugin.settings.ChiperkaSettingsConfigurable"
+            id="com.chiperka.plugin.settings.ChiperkaSettingsConfigurable"
+            displayName="Chiperka"/>
 
         <configurationType
-            implementation="com.chiperkarunner.plugin.run.ChiperkaRunConfigurationType"/>
+            implementation="com.chiperka.plugin.run.ChiperkaRunConfigurationType"/>
 
         <fileType
             name="Chiperka"
-            implementationClass="com.chiperkarunner.plugin.ChiperkaFileType"
+            implementationClass="com.chiperka.plugin.ChiperkaFileType"
             fieldName="INSTANCE"
             language="yaml"
             extensions="chiperka"/>
 
         <codeInsight.lineMarkerProvider
             language="yaml"
-            implementationClass="com.chiperkarunner.plugin.lineMarker.ChiperkaTestLineMarkerProvider"/>
+            implementationClass="com.chiperka.plugin.lineMarker.ChiperkaTestLineMarkerProvider"/>
 
         <lang.psiStructureViewFactory
             language="yaml"
-            implementationClass="com.chiperkarunner.plugin.structure.ChiperkaStructureViewFactory"
+            implementationClass="com.chiperka.plugin.structure.ChiperkaStructureViewFactory"
             order="first"/>
     </extensions>
 
     <extensions defaultExtensionNs="JavaScript">
         <JsonSchema.ProviderFactory
-            implementation="com.chiperkarunner.plugin.schema.ChiperkaSchemaProviderFactory"/>
+            implementation="com.chiperka.plugin.schema.ChiperkaSchemaProviderFactory"/>
     </extensions>
 
     <actions>
         <action id="ChiperkaRunFolderAction"
-                class="com.chiperkarunner.plugin.action.ChiperkaRunFolderAction"
+                class="com.chiperka.plugin.action.ChiperkaRunFolderAction"
                 text="Run Chiperka Tests"
                 description="Run Chiperka tests"
-                icon="com.chiperkarunner.plugin.ChiperkaIcons.Chiperka">
+                icon="com.chiperka.plugin.ChiperkaIcons.Chiperka">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
 
-        <action id="CreateChiperkaTestAction"
-                class="com.chiperkarunner.plugin.action.CreateChiperkaTestAction"
-                text="Chiperka Test"
-                description="Create a new Chiperka test file"
-                icon="com.chiperkarunner.plugin.ChiperkaIcons.Chiperka">
+        <action id="CreateChiperkaSpecificationAction"
+                class="com.chiperka.plugin.action.CreateChiperkaSpecificationAction"
+                text="Chiperka Specification"
+                description="Create a new Chiperka specification file (test or service)"
+                icon="com.chiperka.plugin.ChiperkaIcons.Chiperka">
             <add-to-group group-id="NewGroup" anchor="last"/>
         </action>
     </actions>

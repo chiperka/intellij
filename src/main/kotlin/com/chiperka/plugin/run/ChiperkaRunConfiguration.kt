@@ -1,4 +1,4 @@
-package com.chiperkarunner.plugin.run
+package com.chiperka.plugin.run
 
 import com.intellij.execution.Executor
 import com.intellij.execution.configurations.ConfigurationFactory
@@ -28,10 +28,6 @@ class ChiperkaRunConfiguration(
     var executorType: String
         get() = options.executorType
         set(value) { options.executorType = value }
-
-    var cloudUrl: String
-        get() = options.cloudUrl
-        set(value) { options.cloudUrl = value }
 
     var configurationFile: String
         get() = options.configurationFile

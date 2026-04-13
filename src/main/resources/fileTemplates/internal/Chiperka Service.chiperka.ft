@@ -1,0 +1,6 @@
+kind: service
+name: ${NAME}
+image: nginx:alpine
+healthcheck:
+  test: "wget -q --spider http://localhost:80/"
+  retries: 30

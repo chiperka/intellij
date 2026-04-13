@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.chiperkarunner.plugin"
-version = "1.0.0"
+version = "1.1.0"
 
 repositories {
     mavenCentral()
@@ -28,9 +28,9 @@ kotlin {
 
 intellijPlatform {
     pluginConfiguration {
-        id = "com.chiperkarunner.plugin"
+        id = "com.sparkrunner.plugin"
         name = "Chiperka Test Runner"
-        version = "1.0.0"
+        version = "1.1.0"
         vendor {
             name = "Finie"
             email = "info@finie.cz"

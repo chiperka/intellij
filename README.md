@@ -1,30 +1,34 @@
-# Chiperka Test Runner — JetBrains Plugin
+# Chiperka — JetBrains Plugin
 
-Official JetBrains plugin for [Chiperka](https://about.chiperka.com/) — a declarative, YAML-based API & integration test runner.
+Official JetBrains plugin for [Chiperka](https://about.chiperka.com/) — a declarative YAML-based specification for describing and running backend projects.
 
 **[Install from JetBrains Marketplace](https://plugins.jetbrains.com/plugin/30418-chiperka-test-runner)**
 
-## JetBrains Plugin
+## What does it do?
 
-Run `.chiperka` tests directly from your editor with a single click.
+This plugin lets you read and edit `.chiperka` specifications with full IDE support, and run build, execute, and test actions directly from the editor. Requires [Chiperka CLI](https://about.chiperka.com/getting-started).
 
-- **Gutter play buttons** — run individual tests or entire suites
+### Specification editing
+
+- **JSON Schema validation** — autocompletion and real-time validation for `.chiperka` and `chiperka.yaml` files
+- **Structure view** — navigate suite > tests > sections (services, setup, execution, assertions)
+- **File template** — create new specification files from *New > Chiperka Specification*
+- **Custom file icon** — `.chiperka` files are instantly recognizable in the project tree
+
+### Build, execute & test
+
+- **Gutter play buttons** — run individual tests or entire suites with one click
 - **Test Runner integration** — pass/fail status, duration, diff viewer for assertion failures
-- **Source navigation** — click a test result to jump to its definition
+- **Source navigation** — click a test result to jump to its definition in the `.chiperka` file
 - **Run configurations** — Local, Docker, and Docker Compose execution modes
-- **Cloud mode** — run tests on a remote Chiperka API server
-- **Schema validation** — autocompletion and validation for `.chiperka` and `chiperka.yaml` files
-- **Structure view** — navigate suite > tests > sections
-- **Test button** — verify your interpreter setup from Settings
 
 Works with PhpStorm, IntelliJ IDEA, WebStorm, GoLand, PyCharm, and other JetBrains IDEs (2025.1+).
 
-**[Plugin documentation](https://about.chiperka.com/ide-plugin)**
+## Getting started
 
-## Chiperka CLI
+1. [Install the Chiperka CLI](https://about.chiperka.com/getting-started)
+2. Install the plugin and open a project that contains `.chiperka` specification files
+3. Configure the Chiperka executable path in **Settings > Tools > Chiperka**
+4. Click the play button in the gutter next to a test name to run it
 
-Chiperka is a declarative test runner. You define services, HTTP requests, and assertions in `.chiperka` files and Chiperka handles the rest — spinning up Docker containers, running healthchecks, executing requests, and evaluating assertions.
-
-Docker is required for local use. Cloud mode (`--cloud`) runs tests on a remote server and does not require Docker locally.
-
-**[Getting started](https://about.chiperka.com/getting-started)** · **[GitHub](https://github.com/finie-io/chiperka-intellij)**
+**[Plugin documentation](https://about.chiperka.com/ide-plugin)** · **[GitHub](https://github.com/finie-io/chiperka-intellij)**

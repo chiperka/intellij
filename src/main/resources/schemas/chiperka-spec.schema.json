@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Chiperka Specification",
+  "description": "Schema for Chiperka specification files (*.chiperka) — either a test suite or a service template",
+  "if": {
+    "properties": { "kind": { "const": "service" } },
+    "required": ["kind"]
+  },
+  "then": { "$ref": "chiperka-service.schema.json" },
+  "else": { "$ref": "chiperka-test.schema.json" }
+}

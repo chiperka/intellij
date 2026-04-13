@@ -1,4 +1,4 @@
-package com.chiperkarunner.plugin.settings
+package com.chiperka.plugin.settings
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.Configurable
@@ -9,6 +9,7 @@ import java.awt.CardLayout
 import java.awt.Color
 import java.awt.FlowLayout
 import java.awt.event.ItemEvent
+import java.util.concurrent.TimeUnit
 import javax.swing.*
 
 class ChiperkaSettingsConfigurable(private val project: Project) : Configurable {
@@ -38,12 +39,11 @@ class ChiperkaSettingsConfigurable(private val project: Project) : Configurable 
     private var composePathMappingContainerField: JTextField? = null
 
     // Common
-    private var cloudUrlField: JTextField? = null
     private var configurationFileField: TextFieldWithBrowseButton? = null
     private var testResultLabel: JLabel? = null
     private var panel: JPanel? = null
 
-    override fun getDisplayName(): String = "Chiperka Test Runner"
+    override fun getDisplayName(): String = "Chiperka"
 
     override fun createComponent(): JComponent {
         executorTypeCombo = JComboBox(arrayOf("Local", "Docker", "Docker Compose"))
@@ -136,7 +136,6 @@ class ChiperkaSettingsConfigurable(private val project: Project) : Configurable 
         }
 
         // Common fields
-        cloudUrlField = JTextField()
         configurationFileField = TextFieldWithBrowseButton().apply {
             addBrowseFolderListener(
                 "Select Configuration File",
@@ -160,7 +159,6 @@ class ChiperkaSettingsConfigurable(private val project: Project) : Configurable 
             .addComponent(executorCards!!)
             .addSeparator()
             .addLabeledComponent("Configuration file:", configurationFileField!!)
-            .addLabeledComponent("Cloud URL (override):", cloudUrlField!!)
             .addSeparator()
             .addComponent(testPanel)
             .addComponentFillVertically(JPanel(), 0)
@@ -181,7 +179,16 @@ class ChiperkaSettingsConfigurable(private val project: Project) : Configurable 
                     .redirectErrorStream(true)
                     .start()
                 val output = process.inputStream.bufferedReader().readText().trim()
-                val exitCode = process.waitFor()
+                val finished = process.waitFor(10, TimeUnit.SECONDS)
+                if (!finished) {
+                    process.destroyForcibly()
+                    SwingUtilities.invokeLater {
+                        testResultLabel?.text = "\u274C Timed out after 10s"
+                        testResultLabel?.foreground = Color(0xDB, 0x56, 0x56)
+                    }
+                    return@Thread
+                }
+                val exitCode = process.exitValue()
                 SwingUtilities.invokeLater {
                     if (exitCode == 0 && output.isNotBlank()) {
                         testResultLabel?.text = "\u2705 $output"
@@ -260,7 +267,6 @@ class ChiperkaSettingsConfigurable(private val project: Project) : Configurable 
             || composeChiperkaPathField?.text != s.composeChiperkaPath
             || composePathMappingHostField?.text != s.composePathMappingHost
             || composePathMappingContainerField?.text != s.composePathMappingContainer
-            || cloudUrlField?.text != s.cloudUrl
             || configurationFileField?.text != s.configurationFile
     }
 
@@ -281,7 +287,6 @@ class ChiperkaSettingsConfigurable(private val project: Project) : Configurable 
         s.composeChiperkaPath = composeChiperkaPathField?.text ?: "chiperka"
         s.composePathMappingHost = composePathMappingHostField?.text ?: ""
         s.composePathMappingContainer = composePathMappingContainerField?.text ?: ""
-        s.cloudUrl = cloudUrlField?.text ?: ""
         s.configurationFile = configurationFileField?.text ?: ""
     }
 
@@ -307,7 +312,6 @@ class ChiperkaSettingsConfigurable(private val project: Project) : Configurable 
         composeChiperkaPathField?.text = s.composeChiperkaPath
         composePathMappingHostField?.text = s.composePathMappingHost.ifBlank { projectBasePath }
         composePathMappingContainerField?.text = s.composePathMappingContainer.ifBlank { "/code" }
-        cloudUrlField?.text = s.cloudUrl
         configurationFileField?.text = s.configurationFile
 
         val cardLayout = executorCards?.layout as? CardLayout
@@ -337,7 +341,6 @@ class ChiperkaSettingsConfigurable(private val project: Project) : Configurable 
         composeChiperkaPathField = null
         composePathMappingHostField = null
         composePathMappingContainerField = null
-        cloudUrlField = null
         configurationFileField = null
         testResultLabel = null
         panel = null

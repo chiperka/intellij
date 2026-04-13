@@ -1,4 +1,4 @@
-package com.chiperkarunner.plugin
+package com.chiperka.plugin
 
 import com.intellij.openapi.fileTypes.LanguageFileType
 import org.jetbrains.yaml.YAMLLanguage

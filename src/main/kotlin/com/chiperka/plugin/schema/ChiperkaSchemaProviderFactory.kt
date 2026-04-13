@@ -1,4 +1,4 @@
-package com.chiperkarunner.plugin.schema
+package com.chiperka.plugin.schema
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
@@ -9,23 +9,23 @@ import com.jetbrains.jsonSchema.extension.SchemaType
 class ChiperkaSchemaProviderFactory : JsonSchemaProviderFactory {
     override fun getProviders(project: Project): List<JsonSchemaFileProvider> {
         return listOf(
-            ChiperkaTestSchemaProvider(project),
+            ChiperkaSpecSchemaProvider(project),
             ChiperkaConfigSchemaProvider(project),
         )
     }
 }
 
-private class ChiperkaTestSchemaProvider(private val project: Project) : JsonSchemaFileProvider {
+private class ChiperkaSpecSchemaProvider(private val project: Project) : JsonSchemaFileProvider {
     override fun isAvailable(file: VirtualFile): Boolean {
         return file.extension == "chiperka"
     }
 
-    override fun getName(): String = "Chiperka Test"
+    override fun getName(): String = "Chiperka Specification"
 
     override fun getSchemaFile(): VirtualFile? {
         return JsonSchemaProviderFactory.getResourceFile(
             ChiperkaSchemaProviderFactory::class.java,
-            "/schemas/chiperka-test.schema.json"
+            "/schemas/chiperka-spec.schema.json"
         )
     }
 

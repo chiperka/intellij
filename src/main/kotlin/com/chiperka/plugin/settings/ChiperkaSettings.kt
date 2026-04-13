@@ -1,4 +1,4 @@
-package com.chiperkarunner.plugin.settings
+package com.chiperka.plugin.settings
 
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.Service
@@ -8,8 +8,8 @@ import com.intellij.openapi.project.Project
 
 @Service(Service.Level.PROJECT)
 @State(
-    name = "com.chiperkarunner.plugin.settings.ChiperkaSettings",
-    storages = [Storage("ChiperkaTestRunner.xml")]
+    name = "com.chiperka.plugin.settings.ChiperkaSettings",
+    storages = [Storage("Chiperka.xml")]
 )
 class ChiperkaSettings : PersistentStateComponent<ChiperkaSettings.State> {
 
@@ -29,7 +29,6 @@ class ChiperkaSettings : PersistentStateComponent<ChiperkaSettings.State> {
         var composeChiperkaPath: String = "chiperka",
         var composePathMappingHost: String = "",
         var composePathMappingContainer: String = "",
-        var cloudUrl: String = "",
         var configurationFile: String = ""
     )
 
@@ -100,10 +99,6 @@ class ChiperkaSettings : PersistentStateComponent<ChiperkaSettings.State> {
     var composePathMappingContainer: String
         get() = state.composePathMappingContainer
         set(value) { state.composePathMappingContainer = value }
-
-    var cloudUrl: String
-        get() = state.cloudUrl
-        set(value) { state.cloudUrl = value }
 
     var configurationFile: String
         get() = state.configurationFile

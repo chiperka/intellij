@@ -1,8 +1,8 @@
-package com.chiperkarunner.plugin.run
+package com.chiperka.plugin.run
 
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.util.ui.FormBuilder
-import com.chiperkarunner.plugin.settings.ChiperkaSettings
+import com.chiperka.plugin.settings.ChiperkaSettings
 import javax.swing.JCheckBox
 import javax.swing.JComboBox
 import javax.swing.JComponent
@@ -20,7 +20,6 @@ class ChiperkaRunConfigurationEditor : SettingsEditor<ChiperkaRunConfiguration>(
     private val testFilePathField = JTextField()
     private val filterNameField = JTextField()
     private val configurationFileField = JTextField()
-    private val cloudUrlField = JTextField()
     private val cloudModeCheckBox = JCheckBox("Cloud mode")
     private val regenerateSnapshotsCheckBox = JCheckBox("Regenerate snapshots")
 
@@ -28,7 +27,6 @@ class ChiperkaRunConfigurationEditor : SettingsEditor<ChiperkaRunConfiguration>(
         testFilePathField.text = config.testFilePath
         filterNameField.text = config.filterName
         configurationFileField.text = config.configurationFile
-        cloudUrlField.text = config.cloudUrl
         cloudModeCheckBox.isSelected = config.cloudMode
         regenerateSnapshotsCheckBox.isSelected = config.regenerateSnapshots
         executorTypeCombo.selectedIndex = when (config.executorType) {
@@ -43,7 +41,6 @@ class ChiperkaRunConfigurationEditor : SettingsEditor<ChiperkaRunConfiguration>(
         config.testFilePath = testFilePathField.text
         config.filterName = filterNameField.text
         config.configurationFile = configurationFileField.text
-        config.cloudUrl = cloudUrlField.text
         config.cloudMode = cloudModeCheckBox.isSelected
         config.regenerateSnapshots = regenerateSnapshotsCheckBox.isSelected
         config.executorType = when (executorTypeCombo.selectedIndex) {
@@ -62,7 +59,6 @@ class ChiperkaRunConfigurationEditor : SettingsEditor<ChiperkaRunConfiguration>(
             .addLabeledComponent("Filter:", filterNameField)
             .addLabeledComponent("Configuration:", configurationFileField)
             .addSeparator()
-            .addLabeledComponent("Cloud URL (override):", cloudUrlField)
             .addComponent(cloudModeCheckBox)
             .addComponent(regenerateSnapshotsCheckBox)
             .addComponentFillVertically(JPanel(), 0)

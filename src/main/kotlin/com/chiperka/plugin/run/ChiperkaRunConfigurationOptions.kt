@@ -1,4 +1,4 @@
-package com.chiperkarunner.plugin.run
+package com.chiperka.plugin.run
 
 import com.intellij.execution.configurations.RunConfigurationOptions
 import com.intellij.openapi.components.StoredProperty
@@ -13,9 +13,6 @@ class ChiperkaRunConfigurationOptions : RunConfigurationOptions() {
 
     private val executorTypeProperty: StoredProperty<String?> =
         string("").provideDelegate(this, "executorType")
-
-    private val cloudUrlProperty: StoredProperty<String?> =
-        string("").provideDelegate(this, "cloudUrl")
 
     private val configurationFileProperty: StoredProperty<String?> =
         string("").provideDelegate(this, "configurationFile")
@@ -37,10 +34,6 @@ class ChiperkaRunConfigurationOptions : RunConfigurationOptions() {
     var executorType: String
         get() = executorTypeProperty.getValue(this) ?: ""
         set(value) { executorTypeProperty.setValue(this, value) }
-
-    var cloudUrl: String
-        get() = cloudUrlProperty.getValue(this) ?: ""
-        set(value) { cloudUrlProperty.setValue(this, value) }
 
     var configurationFile: String
         get() = configurationFileProperty.getValue(this) ?: ""

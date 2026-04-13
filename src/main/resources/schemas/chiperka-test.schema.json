@@ -6,6 +6,12 @@
   "required": ["name", "tests"],
   "additionalProperties": false,
   "properties": {
+    "kind": {
+      "type": "string",
+      "description": "File kind discriminator (defaults to 'test' if omitted)",
+      "enum": ["test"],
+      "default": "test"
+    },
     "name": {
       "type": "string",
       "description": "Suite name"
@@ -128,6 +134,18 @@
           "description": "External artifacts to collect from the container after test execution (files or directories)",
           "items": {
             "$ref": "#/definitions/ServiceArtifact"
+          }
+        },
+        "maxInstances": {
+          "type": "integer",
+          "description": "Limit concurrent running instances of this service (0 = unlimited)",
+          "default": 0
+        },
+        "hooks": {
+          "type": "array",
+          "description": "Lifecycle hooks executed at specific points during test execution",
+          "items": {
+            "$ref": "#/definitions/Hook"
           }
         }
       }
@@ -535,6 +553,66 @@
         "snapshot": {
           "type": "string",
           "description": "Path to a reference file for content comparison (relative to .chiperka file)"
+        }
+      }
+    },
+    "Hook": {
+      "type": "object",
+      "required": ["slot"],
+      "additionalProperties": false,
+      "description": "Lifecycle hook executed at a specific point during test execution",
+      "properties": {
+        "slot": {
+          "type": "string",
+          "description": "When to run: beforeExecution (after setup) or afterExecution (after teardown + artifacts)",
+          "enum": ["beforeExecution", "afterExecution"]
+        },
+        "priority": {
+          "type": "integer",
+          "description": "Execution order (lower = earlier, default: 50)",
+          "default": 50
+        },
+        "cli": {
+          "$ref": "#/definitions/HookCLI",
+          "description": "Execute a command inside the owning service container"
+        },
+        "diff": {
+          "$ref": "#/definitions/HookDiff",
+          "description": "Compute a unified diff between two collected artifacts"
+        }
+      }
+    },
+    "HookCLI": {
+      "type": "object",
+      "required": ["command"],
+      "additionalProperties": false,
+      "properties": {
+        "command": {
+          "type": "string",
+          "description": "Shell command to execute inside the service container"
+        },
+        "workingDir": {
+          "type": "string",
+          "description": "Working directory for command execution"
+        }
+      }
+    },
+    "HookDiff": {
+      "type": "object",
+      "required": ["source", "target", "output"],
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "Name of the source artifact to diff"
+        },
+        "target": {
+          "type": "string",
+          "description": "Name of the target artifact to diff"
+        },
+        "output": {
+          "type": "string",
+          "description": "Name for the resulting diff artifact"
         }
       }
     }

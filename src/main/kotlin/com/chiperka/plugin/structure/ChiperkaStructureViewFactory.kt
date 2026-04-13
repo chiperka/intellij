@@ -1,4 +1,4 @@
-package com.chiperkarunner.plugin.structure
+package com.chiperka.plugin.structure
 
 import com.intellij.ide.structureView.*
 import com.intellij.ide.structureView.impl.common.PsiTreeElementBase

@@ -1,4 +1,4 @@
-package com.chiperkarunner.plugin.run
+package com.chiperka.plugin.run
 
 import com.intellij.execution.Location
 import com.intellij.execution.PsiLocation

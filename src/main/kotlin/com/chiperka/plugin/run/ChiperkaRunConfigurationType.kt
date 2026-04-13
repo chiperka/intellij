@@ -1,7 +1,7 @@
-package com.chiperkarunner.plugin.run
+package com.chiperka.plugin.run
 
 import com.intellij.execution.configurations.ConfigurationTypeBase
-import com.chiperkarunner.plugin.ChiperkaIcons
+import com.chiperka.plugin.ChiperkaIcons
 
 class ChiperkaRunConfigurationType : ConfigurationTypeBase(
     ID,

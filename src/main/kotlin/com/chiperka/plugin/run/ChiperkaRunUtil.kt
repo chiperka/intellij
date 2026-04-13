@@ -1,4 +1,4 @@
-package com.chiperkarunner.plugin.run
+package com.chiperka.plugin.run
 
 import com.intellij.execution.ProgramRunnerUtil
 import com.intellij.execution.RunManager

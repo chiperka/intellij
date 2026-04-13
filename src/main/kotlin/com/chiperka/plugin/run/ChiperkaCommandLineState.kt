@@ -1,4 +1,4 @@
-package com.chiperkarunner.plugin.run
+package com.chiperka.plugin.run
 
 import com.intellij.execution.DefaultExecutionResult
 import com.intellij.execution.ExecutionResult
@@ -12,7 +12,7 @@ import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.runners.ProgramRunner
 import com.intellij.execution.testframework.sm.SMTestRunnerConnectionUtil
-import com.chiperkarunner.plugin.settings.ChiperkaSettings
+import com.chiperka.plugin.settings.ChiperkaSettings
 
 class ChiperkaCommandLineState(
     private val config: ChiperkaRunConfiguration,
@@ -35,7 +35,7 @@ class ChiperkaCommandLineState(
 
     private fun buildCommandLine(settings: ChiperkaSettings): GeneralCommandLine {
         val mappedTestPath = settings.mapPath(config.testFilePath)
-        val chiperkaArgs = mutableListOf("run", mappedTestPath)
+        val chiperkaArgs = mutableListOf("test", mappedTestPath)
 
         // Always add --teamcity for IDE test runner integration
         chiperkaArgs.add("--teamcity")
@@ -61,7 +61,6 @@ class ChiperkaCommandLineState(
             chiperkaArgs.add(pathMappingArg)
         }
 
-        val effectiveCloudUrl = config.cloudUrl.ifBlank { settings.cloudUrl }
         if (config.cloudMode) {
             chiperkaArgs.add("--cloud")
         }
@@ -117,10 +116,6 @@ class ChiperkaCommandLineState(
                 commandLine.exePath = chiperkaPath
                 commandLine.addParameters(chiperkaArgs)
             }
-        }
-
-        if (effectiveCloudUrl.isNotBlank()) {
-            commandLine.withEnvironment("CHIPERKA_CLOUD_URL", effectiveCloudUrl)
         }
 
         commandLine.withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)

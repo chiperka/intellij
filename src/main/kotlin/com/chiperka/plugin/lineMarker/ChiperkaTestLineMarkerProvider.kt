@@ -1,11 +1,11 @@
-package com.chiperkarunner.plugin.lineMarker
+package com.chiperka.plugin.lineMarker
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProvider
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiElement
-import com.chiperkarunner.plugin.run.ChiperkaRunUtil
+import com.chiperka.plugin.run.ChiperkaRunUtil
 import org.jetbrains.yaml.psi.*
 
 class ChiperkaTestLineMarkerProvider : LineMarkerProvider {
@@ -43,8 +43,8 @@ class ChiperkaTestLineMarkerProvider : LineMarkerProvider {
     private fun isServiceTemplate(yamlFile: YAMLFile): Boolean {
         val doc = yamlFile.documents.firstOrNull() ?: return false
         val topMapping = doc.topLevelValue as? YAMLMapping ?: return false
-        val typeValue = topMapping.getKeyValueByKey("type")?.valueText
-        return typeValue == "service"
+        val kindValue = topMapping.getKeyValueByKey("kind")?.valueText
+        return kindValue == "service"
     }
 
     private fun isSuiteLevelName(keyValue: YAMLKeyValue): Boolean {

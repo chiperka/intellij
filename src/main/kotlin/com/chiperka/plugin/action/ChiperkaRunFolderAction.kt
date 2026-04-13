@@ -1,11 +1,11 @@
-package com.chiperkarunner.plugin.action
+package com.chiperka.plugin.action
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.chiperkarunner.plugin.ChiperkaIcons
-import com.chiperkarunner.plugin.run.ChiperkaRunUtil
+import com.chiperka.plugin.ChiperkaIcons
+import com.chiperka.plugin.run.ChiperkaRunUtil
 
 class ChiperkaRunFolderAction : AnAction("Run Chiperka Tests", "Run Chiperka tests", ChiperkaIcons.Chiperka) {
 
