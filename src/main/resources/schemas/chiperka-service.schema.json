@@ -51,10 +51,10 @@
         "$ref": "#/definitions/ServiceArtifact"
       }
     },
-    "maxInstances": {
+    "weight": {
       "type": "integer",
-      "description": "Limit concurrent running instances of this service (0 = unlimited)",
-      "default": 0
+      "description": "Resource cost of running this service. Used for weight-based scheduling (default 1)",
+      "default": 1
     },
     "hooks": {
       "type": "array",
